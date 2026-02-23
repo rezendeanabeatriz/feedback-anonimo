@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Canal de Feedback Anônimo</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #21262d;
+    --border: #30363d;
+    --accent: #e8c97a;
+    --accent2: #c7a84b;
+    --text: #e6edf3;
+    --text-muted: #8b949e;
+    --success: #3fb950;
+    --error: #f85149;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(ellipse at 30% 20%, rgba(232,201,122,0.06) 0%, transparent 50%),
+                radial-gradient(ellipse at 70% 80%, rgba(63,185,80,0.04) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 560px;
+  }
+
+  .header {
+    text-align: center;
+    margin-bottom: 40px;
+  }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(232,201,122,0.1);
+    border: 1px solid rgba(232,201,122,0.3);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 5px 12px;
+    border-radius: 20px;
+    margin-bottom: 20px;
+  }
+
+  .badge::before {
+    content: '🔒';
+    font-size: 10px;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 6vw, 42px);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .subtitle {
+    color: var(--text-muted);
+    font-size: 15px;
+    font-weight: 300;
+    line-height: 1.6;
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 36px;
+    margin-bottom: 16px;
+  }
+
+  .field {
+    margin-bottom: 24px;
+  }
+
+  label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 10px;
+  }
+
+  select, textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  select {
+    padding: 14px 44px 14px 16px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238b949e' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    cursor: pointer;
+  }
+
+  select option {
+    background: var(--surface2);
+    color: var(--text);
+  }
+
+  textarea {
+    padding: 14px 16px;
+    resize: vertical;
+    min-height: 140px;
+    line-height: 1.6;
+  }
+
+  select:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(232,201,122,0.15);
+  }
+
+  .char-count {
+    text-align: right;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 6px;
+  }
+
+  .btn {
+    width: 100%;
+    padding: 16px;
+    background: var(--accent);
+    color: #0d1117;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    letter-spacing: 0.02em;
+  }
+
+  .btn:hover { background: var(--accent2); }
+  .btn:active { transform: scale(0.98); }
+  .btn:disabled { background: var(--surface2); color: var(--text-muted); cursor: not-allowed; }
+
+  .privacy-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: rgba(63,185,80,0.06);
+    border: 1px solid rgba(63,185,80,0.2);
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 24px;
+    font-size: 13px;
+    color: #7ee787;
+    line-height: 1.5;
+  }
+
+  .privacy-note::before {
+    content: '✓';
+    font-weight: 700;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 22px;
+    font-size: 14px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    opacity: 0;
+    z-index: 1000;
+    white-space: nowrap;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  .toast.success { border-color: rgba(63,185,80,0.4); color: var(--success); }
+  .toast.error { border-color: rgba(248,81,73,0.4); color: var(--error); }
+
+  /* Success screen */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 20px 0;
+  }
+
+  .success-icon {
+    width: 64px;
+    height: 64px;
+    background: rgba(63,185,80,0.15);
+    border: 2px solid rgba(63,185,80,0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 20px;
+  }
+
+  .success-screen h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: var(--text);
+  }
+
+  .success-screen p {
+    color: var(--text-muted);
+    font-size: 15px;
+    line-height: 1.6;
+    margin-bottom: 24px;
+  }
+
+  .btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    border-radius: 10px;
+    padding: 12px 24px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+  }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* Admin panel */
+  .admin-toggle {
+    margin-top: 40px;
+    text-align: center;
+  }
+
+  .admin-toggle button {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 12px;
+    cursor: pointer;
+    text-decoration: underline;
+    font-family: 'DM Sans', sans-serif;
+    opacity: 0.5;
+  }
+
+  .admin-panel {
+    display: none;
+    margin-top: 16px;
+  }
+
+  .admin-panel .card {
+    border-color: rgba(232,201,122,0.3);
+  }
+
+  .admin-panel h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .admin-panel h3::before { content: '⚙'; }
+
+  .admin-field {
+    margin-bottom: 16px;
+  }
+
+  .admin-field label {
+    font-size: 12px;
+    margin-bottom: 6px;
+  }
+
+  .admin-field input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    padding: 10px 12px;
+    outline: none;
+  }
+
+  .admin-field input:focus {
+    border-color: var(--accent);
+  }
+
+  .admin-field input::placeholder { color: var(--text-muted); font-size: 12px; }
+
+  .btn-admin {
+    width: 100%;
+    padding: 12px;
+    background: rgba(232,201,122,0.1);
+    border: 1px solid rgba(232,201,122,0.3);
+    border-radius: 8px;
+    color: var(--accent);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 4px;
+  }
+
+  .btn-admin:hover { background: rgba(232,201,122,0.2); }
+
+  /* QR section */
+  .qr-section {
+    display: none;
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  .qr-section h4 {
+    font-size: 13px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+
+  #qrcode {
+    display: inline-block;
+    background: white;
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .qr-url {
+    font-size: 11px;
+    color: var(--text-muted);
+    word-break: break-all;
+    margin-top: 12px;
+    line-height: 1.5;
+  }
+
+  .btn-download {
+    margin-top: 12px;
+    padding: 10px 20px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    cursor: pointer;
+    transition: border-color 0.2s;
+  }
+
+  .btn-download:hover { border-color: var(--accent); }
+
+  .config-status {
+    font-size: 12px;
+    color: var(--text-muted);
+    text-align: center;
+    margin-top: 8px;
+  }
+  .config-status.ok { color: var(--success); }
+  .config-status.warn { color: #f0883e; }
+
+  /* Responsive */
+  @media (max-width: 480px) {
+    .card { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <div class="badge">100% Anônimo</div>
+    <h1>Sua voz <span>importa</span></h1>
+    <p class="subtitle">Compartilhe sua opinião de forma segura e confidencial.<br>Nenhuma informação pessoal é coletada.</p>
+  </div>
+
+  <div class="card" id="formCard">
+    <div id="formView">
+      <div class="privacy-note">
+        Seu feedback é completamente anônimo. Não coletamos nenhum dado que permita sua identificação.
+      </div>
+
+      <div class="field">
+        <label>Sua Unidade</label>
+        <select id="unidade" required>
+          <option value="" disabled selected>Selecione sua unidade...</option>
+          <option>Matriz</option>
+          <option>Rio Saúde</option>
+          <option>Viva Rio</option>
+          <option>HFA ROUPARIA</option>
+          <option>HFB ROUPARIA</option>
+          <option>HFB NUTRIÇÃO</option>
+          <option>CARDOSO FONTES</option>
+          <option>HOSPITAL DO BOMBEIRO</option>
+          <option>HOSPITAL FEDERAL DE IPANEMA</option>
+          <option>HOSPITAL LOURENÇO JORGE</option>
+          <option>HOSPITAL MATERNIDADE PAULINO WERNECK</option>
+          <option>HOSPITAL OCÊANICO</option>
+          <option>HOSPITAL PEDRO SEGUNDO</option>
+          <option>HOSPITAL RONALDO GAZOLLA</option>
+          <option>HOSPITAL SÃO JOSÉ</option>
+          <option>HOSPITAL SÃO LUCAS</option>
+          <option>HOSPITAL TAVARES DE MACEDO</option>
+          <option>HUCFF</option>
+          <option>HUPE</option>
+          <option>IPPMG</option>
+          <option>INSTITUTO GNOSIS</option>
+          <option>UERJ</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label>Seu Feedback</label>
+        <textarea id="mensagem" placeholder="Escreva aqui sua opinião, sugestão ou comentário..." maxlength="1000"></textarea>
+        <div class="char-count"><span id="charCount">0</span>/1000</div>
+      </div>
+
+      <button class="btn" id="submitBtn" onclick="enviarFeedback()">Enviar Feedback Anônimo</button>
+    </div>
+
+    <div class="success-screen" id="successView">
+      <div class="success-icon">✓</div>
+      <h2>Obrigado!</h2>
+      <p>Seu feedback foi recebido com sucesso.<br>Sua opinião é muito importante para nós.</p>
+      <button class="btn-secondary" onclick="resetForm()">Enviar outro feedback</button>
+    </div>
+  </div>
+
+  <div class="admin-toggle">
+    <button onclick="toggleAdmin()">configurações</button>
+  </div>
+
+  <div class="admin-panel" id="adminPanel">
+    <div class="card">
+      <h3>Configurar Baserow</h3>
+
+      <div class="admin-field">
+        <label>URL do Baserow (ex: https://baserow.io)</label>
+        <input type="text" id="baserowUrl" placeholder="https://baserow.io" />
+      </div>
+
+      <div class="admin-field">
+        <label>Token da API</label>
+        <input type="text" id="apiToken" placeholder="Seu token de API do Baserow" />
+      </div>
+
+      <div class="admin-field">
+        <label>ID da Tabela</label>
+        <input type="number" id="tableId" placeholder="ex: 1234" />
+      </div>
+
+      <div class="admin-field">
+        <label>Nome do campo — Unidade (na tabela)</label>
+        <input type="text" id="fieldUnidade" placeholder="Unidade" value="Unidade" />
+      </div>
+
+      <div class="admin-field">
+        <label>Nome do campo — Mensagem (na tabela)</label>
+        <input type="text" id="fieldMensagem" placeholder="Mensagem" value="Mensagem" />
+      </div>
+
+      <div class="admin-field">
+        <label>Nome do campo — Data (na tabela, opcional)</label>
+        <input type="text" id="fieldData" placeholder="Data (deixe vazio para não usar)" />
+      </div>
+
+      <button class="btn-admin" onclick="salvarConfig()">Salvar Configurações</button>
+      <div class="config-status" id="configStatus"></div>
+
+      <hr style="border-color: var(--border); margin: 20px 0;">
+
+      <h3 style="margin-bottom:16px;">Gerar QR Code</h3>
+      <p style="font-size:13px; color:var(--text-muted); margin-bottom:12px;">Cole a URL onde este arquivo está hospedado (GitHub Pages, Netlify, etc.):</p>
+
+      <div class="admin-field">
+        <input type="text" id="qrUrl" placeholder="https://seusite.com/feedback.html" />
+      </div>
+      <button class="btn-admin" onclick="gerarQR()">Gerar QR Code</button>
+
+      <div class="qr-section" id="qrSection">
+        <h4>QR Code para impressão</h4>
+        <div id="qrcode"></div>
+        <div class="qr-url" id="qrUrlDisplay"></div>
+        <br>
+        <button class="btn-download" onclick="downloadQR()">⬇ Baixar QR Code (PNG)</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Config storage
+const CONFIG_KEY = 'feedback_config';
+
+function loadConfig() {
+  try {
+    return JSON.parse(localStorage.getItem(CONFIG_KEY)) || {};
+  } catch { return {}; }
+}
+
+function saveConfig(cfg) {
+  localStorage.setItem(CONFIG_KEY, JSON.stringify(cfg));
+}
+
+// Populate admin fields from storage
+(function init() {
+  const cfg = loadConfig();
+  if (cfg.baserowUrl) document.getElementById('baserowUrl').value = cfg.baserowUrl;
+  if (cfg.apiToken) document.getElementById('apiToken').value = cfg.apiToken;
+  if (cfg.tableId) document.getElementById('tableId').value = cfg.tableId;
+  if (cfg.fieldUnidade) document.getElementById('fieldUnidade').value = cfg.fieldUnidade;
+  if (cfg.fieldMensagem) document.getElementById('fieldMensagem').value = cfg.fieldMensagem;
+  if (cfg.fieldData !== undefined) document.getElementById('fieldData').value = cfg.fieldData;
+  updateConfigStatus(cfg);
+})();
+
+function updateConfigStatus(cfg) {
+  const el = document.getElementById('configStatus');
+  if (cfg.baserowUrl && cfg.apiToken && cfg.tableId) {
+    el.textContent = '✓ Baserow configurado';
+    el.className = 'config-status ok';
+  } else {
+    el.textContent = '⚠ Configure o Baserow para salvar os feedbacks';
+    el.className = 'config-status warn';
+  }
+}
+
+function salvarConfig() {
+  const cfg = {
+    baserowUrl: document.getElementById('baserowUrl').value.trim().replace(/\/$/, ''),
+    apiToken: document.getElementById('apiToken').value.trim(),
+    tableId: document.getElementById('tableId').value.trim(),
+    fieldUnidade: document.getElementById('fieldUnidade').value.trim() || 'Unidade',
+    fieldMensagem: document.getElementById('fieldMensagem').value.trim() || 'Mensagem',
+    fieldData: document.getElementById('fieldData').value.trim(),
+  };
+  saveConfig(cfg);
+  updateConfigStatus(cfg);
+  showToast('✓ Configurações salvas!', 'success');
+}
+
+// Char count
+document.getElementById('mensagem').addEventListener('input', function() {
+  document.getElementById('charCount').textContent = this.value.length;
+});
+
+async function enviarFeedback() {
+  const unidade = document.getElementById('unidade').value;
+  const mensagem = document.getElementById('mensagem').value.trim();
+
+  if (!unidade) { showToast('Selecione sua unidade', 'error'); return; }
+  if (!mensagem) { showToast('Escreva seu feedback antes de enviar', 'error'); return; }
+
+  const cfg = loadConfig();
+
+  if (!cfg.baserowUrl || !cfg.apiToken || !cfg.tableId) {
+    showToast('⚠ Baserow não configurado ainda. Configure nas opções abaixo.', 'error');
+    toggleAdmin();
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  const row = {};
+  row[cfg.fieldUnidade] = unidade;
+  row[cfg.fieldMensagem] = mensagem;
+  if (cfg.fieldData) row[cfg.fieldData] = new Date().toISOString().slice(0,10);
+
+  try {
+    const res = await fetch(`${cfg.baserowUrl}/api/database/rows/table/${cfg.tableId}/?user_field_names=true`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Token ${cfg.apiToken}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(row)
+    });
+
+    if (res.ok) {
+      document.getElementById('formView').style.display = 'none';
+      document.getElementById('successView').style.display = 'block';
+    } else {
+      const err = await res.json().catch(() => ({}));
+      showToast('Erro ao enviar. Verifique as configurações do Baserow.', 'error');
+      console.error(err);
+    }
+  } catch (e) {
+    showToast('Erro de conexão. Verifique a URL do Baserow.', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Enviar Feedback Anônimo';
+  }
+}
+
+function resetForm() {
+  document.getElementById('unidade').value = '';
+  document.getElementById('mensagem').value = '';
+  document.getElementById('charCount').textContent = '0';
+  document.getElementById('formView').style.display = 'block';
+  document.getElementById('successView').style.display = 'none';
+}
+
+function toggleAdmin() {
+  const p = document.getElementById('adminPanel');
+  p.style.display = p.style.display === 'block' ? 'none' : 'block';
+}
+
+function gerarQR() {
+  const url = document.getElementById('qrUrl').value.trim();
+  if (!url) { showToast('Digite a URL do formulário', 'error'); return; }
+
+  const container = document.getElementById('qrcode');
+  container.innerHTML = '';
+
+  new QRCode(container, {
+    text: url,
+    width: 240,
+    height: 240,
+    colorDark: '#000000',
+    colorLight: '#ffffff',
+    correctLevel: QRCode.CorrectLevel.H
+  });
+
+  document.getElementById('qrUrlDisplay').textContent = url;
+  document.getElementById('qrSection').style.display = 'block';
+  showToast('QR Code gerado!', 'success');
+}
+
+function downloadQR() {
+  const canvas = document.querySelector('#qrcode canvas');
+  if (!canvas) { showToast('Gere o QR Code primeiro', 'error'); return; }
+
+  // Create a bigger canvas with margin and label
+  const pad = 32;
+  const labelH = 40;
+  const out = document.createElement('canvas');
+  out.width = canvas.width + pad * 2;
+  out.height = canvas.height + pad * 2 + labelH;
+  const ctx = out.getContext('2d');
+
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, out.width, out.height);
+  ctx.drawImage(canvas, pad, pad);
+
+  ctx.fillStyle = '#222222';
+  ctx.font = 'bold 16px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText('Canal de Feedback Anônimo', out.width / 2, canvas.height + pad + 26);
+
+  const link = document.createElement('a');
+  link.download = 'qrcode-feedback.png';
+  link.href = out.toDataURL('image/png');
+  link.click();
+}
+
+function showToast(msg, type = 'success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+</script>
+</body>
+</html>
