@@ -128,6 +128,44 @@ body {
   margin-top: 20px;
 }
 
+/* ── UNIDADE DISPLAY (substitui o select) ── */
+.unidade-display {
+  width: 100%;
+  background: rgba(41,168,224,0.06);
+  border: 1px solid rgba(41,168,224,0.25);
+  border-radius: 12px;
+  padding: 13px 16px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  color: var(--blue);
+  display: flex; align-items: center; gap: 10px;
+}
+
+.unidade-display::before { content: '🏥'; font-size: 14px; }
+
+/* ── ERRO: sem unidade na URL ── */
+.unidade-error {
+  background: rgba(248,113,113,0.06);
+  border: 1px solid rgba(248,113,113,0.25);
+  border-radius: 14px;
+  padding: 32px 24px;
+  text-align: center;
+}
+
+.unidade-error .err-icon { font-size: 36px; margin-bottom: 14px; }
+
+.unidade-error h3 {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 2px;
+  color: var(--red); margin-bottom: 10px;
+}
+
+.unidade-error p {
+  font-size: 13px; color: var(--muted); line-height: 1.7;
+}
+
 /* ── CARD ── */
 .card {
   background: var(--card);
@@ -147,16 +185,6 @@ body {
 /* ── FORM ── */
 .field { margin-bottom: 18px; }
 
-.field-label {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 9px; font-weight: 800;
-  text-transform: uppercase; letter-spacing: 2px;
-  color: var(--muted);
-  margin-bottom: 8px;
-  display: block;
-}
-
-.field select,
 .field textarea {
   width: 100%;
   background: rgba(255,255,255,0.04);
@@ -168,25 +196,11 @@ body {
   outline: none;
   appearance: none; -webkit-appearance: none;
   transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-}
-
-.field select {
-  padding: 13px 40px 13px 16px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  cursor: pointer;
-}
-
-.field select option { background: #141820; }
-
-.field textarea {
   padding: 14px 16px;
   resize: vertical; min-height: 120px;
   line-height: 1.65;
 }
 
-.field select:focus,
 .field textarea:focus {
   border-color: rgba(41,168,224,0.5);
   background: rgba(41,168,224,0.04);
@@ -249,9 +263,7 @@ body {
 .btn-ghost:hover { border-color: rgba(41,168,224,0.4); color: var(--blue); }
 
 /* ── ADMIN ── */
-.admin-trigger {
-  margin-top: 40px; text-align: center;
-}
+.admin-trigger { margin-top: 40px; text-align: center; }
 .admin-trigger button {
   background: none; border: none;
   font-family: 'Montserrat', sans-serif;
@@ -325,7 +337,8 @@ body {
   text-transform: uppercase; letter-spacing: 2px;
   color: var(--muted); margin-bottom: 7px;
 }
-.cfg-field input {
+.cfg-field input,
+.cfg-field select {
   width: 100%;
   background: rgba(255,255,255,0.03);
   border: 1px solid var(--border);
@@ -335,7 +348,15 @@ body {
   appearance: none; -webkit-appearance: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
-.cfg-field input:focus {
+.cfg-field select {
+  padding-right: 36px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  cursor: pointer;
+}
+.cfg-field select option { background: #141820; }
+.cfg-field input:focus, .cfg-field select:focus {
   border-color: rgba(41,168,224,0.4);
   box-shadow: 0 0 0 3px rgba(41,168,224,0.07);
 }
@@ -391,6 +412,36 @@ body {
 }
 .btn-dl:hover { border-color: rgba(41,168,224,0.5); color: var(--blue); }
 
+/* URL LIST */
+.url-list { display: none; margin-top: 14px; }
+.url-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 13px;
+  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 10px;
+}
+.url-item-name {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 9px; font-weight: 800;
+  letter-spacing: 1px; text-transform: uppercase;
+  color: var(--blue);
+  flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.url-item-btn {
+  background: var(--blue-bg);
+  border: 1px solid var(--blue-bd);
+  border-radius: 7px;
+  color: var(--blue);
+  font-family: 'Montserrat', sans-serif;
+  font-size: 8px; font-weight: 800;
+  letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 5px 11px; cursor: pointer; white-space: nowrap;
+  transition: background 0.2s;
+}
+.url-item-btn:hover { background: rgba(41,168,224,0.25); }
+
 /* TOAST */
 .toast {
   position: fixed; bottom: 28px; left: 50%;
@@ -443,37 +494,13 @@ body {
     </div>
   </div>
 
-  <!-- FORM CARD -->
-  <div class="card">
+  <!-- FORM CARD (visível só quando unidade está na URL) -->
+  <div class="card" id="formCard" style="display:none;">
     <div id="formView">
 
       <div class="section-label" style="margin-top:0;">Sua unidade</div>
       <div class="field">
-        <select id="unidade" required>
-          <option value="" disabled selected>Selecione sua unidade...</option>
-          <option>Matriz</option>
-          <option>Rio Saúde</option>
-          <option>Viva Rio</option>
-          <option>HFA ROUPARIA</option>
-          <option>HFB ROUPARIA</option>
-          <option>HFB NUTRIÇÃO</option>
-          <option>CARDOSO FONTES</option>
-          <option>HOSPITAL DO BOMBEIRO</option>
-          <option>HOSPITAL FEDERAL DE IPANEMA</option>
-          <option>HOSPITAL LOURENÇO JORGE</option>
-          <option>HOSPITAL MATERNIDADE PAULINO WERNECK</option>
-          <option>HOSPITAL OCÊANICO</option>
-          <option>HOSPITAL PEDRO SEGUNDO</option>
-          <option>HOSPITAL RONALDO GAZOLLA</option>
-          <option>HOSPITAL SÃO JOSÉ</option>
-          <option>HOSPITAL SÃO LUCAS</option>
-          <option>HOSPITAL TAVARES DE MACEDO</option>
-          <option>HUCFF</option>
-          <option>HUPE</option>
-          <option>IPPMG</option>
-          <option>INSTITUTO GNOSIS</option>
-          <option>UERJ</option>
-        </select>
+        <div class="unidade-display" id="unidadeDisplay">—</div>
       </div>
 
       <div class="section-label">Sua mensagem</div>
@@ -485,7 +512,6 @@ body {
       <button class="btn-submit" id="submitBtn" onclick="enviarFeedback()">
         Enviar Feedback
       </button>
-
     </div>
 
     <!-- SUCCESS -->
@@ -495,6 +521,13 @@ body {
       <p>Seu feedback chegou com segurança.<br>Nenhum dado pessoal foi coletado.</p>
       <button class="btn-ghost" onclick="resetForm()">Enviar outro</button>
     </div>
+  </div>
+
+  <!-- ERRO: sem unidade na URL -->
+  <div class="unidade-error" id="unidadeError" style="display:none;">
+    <div class="err-icon">🔗</div>
+    <h3>QR Code inválido</h3>
+    <p>Este link não contém uma unidade válida.<br>Por favor, use o QR Code correto da sua unidade.</p>
   </div>
 
   <!-- ADMIN -->
@@ -567,22 +600,67 @@ body {
 
         <hr class="sep">
 
-        <div class="cfg-h">QR Code</div>
-        <p style="font-size:11px; color:var(--muted); margin-bottom:12px; line-height:1.7; letter-spacing:0.3px;">
-          URL onde o formulário está hospedado:
+        <!-- QR por unidade -->
+        <div class="cfg-h">QR Code por Unidade</div>
+        <p style="font-size:11px; color:var(--muted); margin-bottom:14px; line-height:1.8; letter-spacing:0.3px;">
+          Informe a URL do arquivo no GitHub Pages. O sistema monta automaticamente
+          <code style="background:var(--blue-bg);border:1px solid var(--blue-bd);padding:1px 7px;border-radius:4px;color:var(--blue);font-size:10px;">?unidade=NOME</code>
+          para cada unidade.
         </p>
+
         <div class="cfg-field">
-          <input type="text" id="qrUrl" placeholder="https://rezendeanabeatriz.github.io/feedback-anonimo/feedback_form.html" />
+          <label>URL base do formulário (GitHub Pages)</label>
+          <input type="text" id="qrBaseUrl" placeholder="https://usuario.github.io/repo/feedback_form.html" />
         </div>
+
+        <div class="cfg-field">
+          <label>Selecionar unidade</label>
+          <select id="qrUnidadeSelect">
+            <option value="">— escolha uma unidade —</option>
+            <option>Matriz</option>
+            <option>Rio Saúde</option>
+            <option>Viva Rio</option>
+            <option>HFA ROUPARIA</option>
+            <option>HFB ROUPARIA</option>
+            <option>HFB NUTRIÇÃO</option>
+            <option>CARDOSO FONTES</option>
+            <option>HOSPITAL DO BOMBEIRO</option>
+            <option>HOSPITAL FEDERAL DE IPANEMA</option>
+            <option>HOSPITAL LOURENÇO JORGE</option>
+            <option>HOSPITAL MATERNIDADE PAULINO WERNECK</option>
+            <option>HOSPITAL OCÊANICO</option>
+            <option>HOSPITAL PEDRO SEGUNDO</option>
+            <option>HOSPITAL RONALDO GAZOLLA</option>
+            <option>HOSPITAL SÃO JOSÉ</option>
+            <option>HOSPITAL SÃO LUCAS</option>
+            <option>HOSPITAL TAVARES DE MACEDO</option>
+            <option>HUCFF</option>
+            <option>HUPE</option>
+            <option>IPPMG</option>
+            <option>INSTITUTO GNOSIS</option>
+            <option>UERJ</option>
+          </select>
+        </div>
+
         <button class="btn-cfg" onclick="gerarQR()">📱 &nbsp;Gerar QR Code</button>
 
         <div class="qr-wrap" id="qrWrap">
-          <h4>QR Code para impressão</h4>
+          <h4 id="qrTitle">QR Code para impressão</h4>
           <div id="qrcode"></div>
           <div class="qr-url-txt" id="qrUrlTxt"></div>
           <br>
           <button class="btn-dl" onclick="downloadQR()">⬇ &nbsp;Baixar PNG</button>
         </div>
+
+        <hr class="sep">
+
+        <!-- Todas as URLs -->
+        <div class="cfg-h">Todas as URLs</div>
+        <p style="font-size:11px; color:var(--muted); margin-bottom:12px; line-height:1.7;">
+          Gere todos os links de uma vez para distribuir ou criar QR codes em lote.
+        </p>
+        <button class="btn-cfg" onclick="listarURLs()">📋 &nbsp;Listar todas as URLs</button>
+        <div class="url-list" id="urlList"></div>
 
         <hr class="sep">
         <button class="btn-exit" onclick="sair()">Sair da área administrativa</button>
@@ -597,12 +675,38 @@ body {
 <div class="toast" id="toast"></div>
 
 <script>
+// ─── Lista de unidades ────────────────────────────────────────────────────────
+const UNIDADES = [
+  'Matriz','Rio Saúde','Viva Rio','HFA ROUPARIA','HFB ROUPARIA',
+  'HFB NUTRIÇÃO','CARDOSO FONTES','HOSPITAL DO BOMBEIRO',
+  'HOSPITAL FEDERAL DE IPANEMA','HOSPITAL LOURENÇO JORGE',
+  'HOSPITAL MATERNIDADE PAULINO WERNECK','HOSPITAL OCÊANICO',
+  'HOSPITAL PEDRO SEGUNDO','HOSPITAL RONALDO GAZOLLA',
+  'HOSPITAL SÃO JOSÉ','HOSPITAL SÃO LUCAS','HOSPITAL TAVARES DE MACEDO',
+  'HUCFF','HUPE','IPPMG','INSTITUTO GNOSIS','UERJ'
+];
+
+// ─── Detectar unidade via ?unidade=NOME ───────────────────────────────────────
+const params        = new URLSearchParams(window.location.search);
+const unidadeParam  = params.get('unidade');
+let   UNIDADE_ATUAL = null;
+
+if (unidadeParam) {
+  UNIDADE_ATUAL = unidadeParam;
+  document.getElementById('unidadeDisplay').textContent = UNIDADE_ATUAL;
+  document.getElementById('formCard').style.display = 'block';
+  document.title = `Feedback — ${UNIDADE_ATUAL} | São Geraldo Service`;
+} else {
+  document.getElementById('unidadeError').style.display = 'block';
+}
+
+// ─── Config / Auth ────────────────────────────────────────────────────────────
 const CFG_KEY  = 'sgs_fb_cfg';
 const SESS_KEY = 'sgs_admin';
 const D_HASH   = btoa('admin123');
 
 const loadCfg = () => { try { return JSON.parse(localStorage.getItem(CFG_KEY)) || {}; } catch { return {}; } };
-const saveCfg = c => localStorage.setItem(CFG_KEY, JSON.stringify(c));
+const saveCfg = c  => localStorage.setItem(CFG_KEY, JSON.stringify(c));
 const getHash = () => loadCfg().h || D_HASH;
 
 function verificarSenha() {
@@ -651,10 +755,10 @@ function salvarConfig() {
 }
 
 function alterarSenha() {
-  const n = document.getElementById('novaSenha').value;
+  const n  = document.getElementById('novaSenha').value;
   const cf = document.getElementById('confirmarSenha').value;
   if (n.length < 6) { showToast('Mínimo 6 caracteres', 'error'); return; }
-  if (n !== cf) { showToast('Senhas não coincidem', 'error'); return; }
+  if (n !== cf)     { showToast('Senhas não coincidem', 'error'); return; }
   const c = loadCfg(); c.h = btoa(n); saveCfg(c);
   document.getElementById('novaSenha').value = '';
   document.getElementById('confirmarSenha').value = '';
@@ -676,20 +780,22 @@ function toggleAdmin() {
   if (!open && sessionStorage.getItem(SESS_KEY)) abrirCfg();
 }
 
+// ─── Char count ───────────────────────────────────────────────────────────────
 document.getElementById('mensagem').addEventListener('input', function() {
   document.getElementById('charCount').textContent = this.value.length;
 });
 
+// ─── Enviar feedback ──────────────────────────────────────────────────────────
 async function enviarFeedback() {
-  const un = document.getElementById('unidade').value;
   const ms = document.getElementById('mensagem').value.trim();
-  if (!un) { showToast('Selecione sua unidade', 'error'); return; }
   if (!ms) { showToast('Escreva seu feedback', 'error'); return; }
   const c = loadCfg();
   if (!c.url || !c.tok || !c.tid) { showToast('Sistema indisponível.', 'error'); return; }
   const btn = document.getElementById('submitBtn');
   btn.disabled = true; btn.textContent = 'Enviando...';
-  const row = {}; row[c.fu] = un; row[c.fm] = ms;
+  const row = {};
+  row[c.fu] = UNIDADE_ATUAL;
+  row[c.fm] = ms;
   if (c.fd) row[c.fd] = new Date().toISOString().slice(0,10);
   try {
     const res = await fetch(`${c.url}/api/database/rows/table/${c.tid}/?user_field_names=true`, {
@@ -698,7 +804,7 @@ async function enviarFeedback() {
       body: JSON.stringify(row)
     });
     if (res.ok) {
-      document.getElementById('formView').style.display = 'none';
+      document.getElementById('formView').style.display  = 'none';
       document.getElementById('successView').style.display = 'block';
     } else { showToast('Erro ao enviar. Tente novamente.', 'error'); }
   } catch { showToast('Erro de conexão.', 'error'); }
@@ -706,22 +812,31 @@ async function enviarFeedback() {
 }
 
 function resetForm() {
-  document.getElementById('unidade').value = '';
   document.getElementById('mensagem').value = '';
   document.getElementById('charCount').textContent = '0';
-  document.getElementById('formView').style.display = 'block';
+  document.getElementById('formView').style.display  = 'block';
   document.getElementById('successView').style.display = 'none';
 }
 
+// ─── QR Code ──────────────────────────────────────────────────────────────────
+function buildUrl(base, unidade) {
+  return `${base.trim().replace(/\/$/,'')}?unidade=${encodeURIComponent(unidade)}`;
+}
+
 function gerarQR() {
-  const url = document.getElementById('qrUrl').value.trim();
-  if (!url) { showToast('Digite a URL do formulário', 'error'); return; }
+  const base    = document.getElementById('qrBaseUrl').value.trim();
+  const unidade = document.getElementById('qrUnidadeSelect').value;
+  if (!base)    { showToast('Digite a URL base', 'error'); return; }
+  if (!unidade) { showToast('Selecione uma unidade', 'error'); return; }
+
+  const url = buildUrl(base, unidade);
   document.getElementById('qrcode').innerHTML = '';
   new QRCode(document.getElementById('qrcode'), {
     text: url, width: 220, height: 220,
     colorDark: '#000', colorLight: '#fff',
     correctLevel: QRCode.CorrectLevel.H
   });
+  document.getElementById('qrTitle').textContent = `QR Code — ${unidade}`;
   document.getElementById('qrUrlTxt').textContent = url;
   document.getElementById('qrWrap').style.display = 'block';
   showToast('QR Code gerado!', 'success');
@@ -730,9 +845,10 @@ function gerarQR() {
 function downloadQR() {
   const canvas = document.querySelector('#qrcode canvas');
   if (!canvas) { showToast('Gere o QR Code primeiro', 'error'); return; }
+  const unidade = document.getElementById('qrUnidadeSelect').value || 'unidade';
   const pad = 28, lh = 56;
   const out = document.createElement('canvas');
-  out.width = canvas.width + pad*2;
+  out.width  = canvas.width  + pad*2;
   out.height = canvas.height + pad*2 + lh;
   const ctx = out.getContext('2d');
   ctx.fillStyle = '#fff'; ctx.fillRect(0,0,out.width,out.height);
@@ -741,12 +857,45 @@ function downloadQR() {
   ctx.font = 'bold 13px Montserrat, sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('SÃO GERALDO SERVICE', out.width/2, canvas.height+pad+22);
-  ctx.fillStyle = '#aaa'; ctx.font = '11px sans-serif';
-  ctx.fillText('Canal de Feedback Anônimo', out.width/2, canvas.height+pad+40);
+  ctx.fillStyle = '#666'; ctx.font = '11px sans-serif';
+  ctx.fillText(unidade, out.width/2, canvas.height+pad+40);
   const a = document.createElement('a');
-  a.download = 'qrcode-sgs.png'; a.href = out.toDataURL('image/png'); a.click();
+  a.download = `qrcode-${unidade.toLowerCase().replace(/[\s\/]+/g,'-')}.png`;
+  a.href = out.toDataURL('image/png'); a.click();
 }
 
+// ─── Listar todas as URLs ─────────────────────────────────────────────────────
+function listarURLs() {
+  const base = document.getElementById('qrBaseUrl').value.trim();
+  if (!base) { showToast('Preencha a URL base primeiro', 'error'); return; }
+
+  const container = document.getElementById('urlList');
+  container.innerHTML = '';
+
+  UNIDADES.forEach(u => {
+    const url = buildUrl(base, u);
+    const div = document.createElement('div');
+    div.className = 'url-item';
+    // store url in data attr to avoid escaping issues with onclick
+    div.innerHTML = `
+      <span class="url-item-name" title="${url}">${u}</span>
+      <button class="url-item-btn">Copiar</button>
+    `;
+    div.querySelector('button').addEventListener('click', () => copiar(url));
+    container.appendChild(div);
+  });
+
+  container.style.display = 'block';
+  showToast('URLs geradas!', 'success');
+}
+
+function copiar(url) {
+  navigator.clipboard.writeText(url)
+    .then(() => showToast('URL copiada!', 'success'))
+    .catch(() => showToast('Erro ao copiar', 'error'));
+}
+
+// ─── Toast ────────────────────────────────────────────────────────────────────
 function showToast(msg, type='success') {
   const t = document.getElementById('toast');
   t.textContent = msg; t.className = `toast ${type} show`;
