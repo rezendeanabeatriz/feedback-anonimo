@@ -3,679 +3,1152 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>São Geraldo Service — Feedback</title>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800;900&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<title>SGS — Feedback</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --blue:    #29A8E0;
-  --blue-bg: rgba(41,168,224,0.12);
-  --blue-bd: rgba(41,168,224,0.2);
-  --green:   #7DC242;
-  --yellow:  #fbbf24;
-  --red:     #f87171;
-  --bg:      #0e1117;
-  --bg2:     #141820;
-  --card:    rgba(255,255,255,0.04);
-  --border:  rgba(255,255,255,0.07);
-  --text:    #ffffff;
-  --muted:   rgba(255,255,255,0.35);
-  --muted2:  rgba(255,255,255,0.15);
+  --sgs-blue:    #0a5a8c;
+  --sgs-blue2:   #0d6fa8;
+  --sgs-blue-lt: #1a88c9;
+  --sgs-green:   #10b259;
+  --sgs-green2:  #0d9e4f;
+  --sgs-light:   #4db3e8;
+  --white:       #ffffff;
+  --off-white:   #f0f6fa;
+  --ink:         #0a1628;
+  --ink2:        #1a2d45;
+  --muted:       rgba(10,26,40,0.45);
+  --muted2:      rgba(10,26,40,0.18);
+  --border:      rgba(10,26,40,0.1);
+  --green:       #22c55e;
+  --red:         #ef4444;
 }
 
-html, body {
-  min-height: 100vh;
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-}
+html { scroll-behavior: smooth; }
 
 body {
-  display: flex;
-  justify-content: center;
-  padding: 40px 16px 80px;
+  font-family: 'DM Sans', sans-serif;
+  background: var(--off-white);
+  color: var(--ink);
+  min-height: 100vh;
+  overflow-x: hidden;
 }
 
-.page {
-  width: 100%;
-  max-width: 480px;
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0; opacity: 0.4;
+}
+
+/* ── DESKTOP LAYOUT ── */
+.shell {
+  position: relative; z-index: 1;
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+
+/* ── HERO ── */
+.hero {
+  background: linear-gradient(160deg, var(--sgs-blue) 0%, #073d63 100%);
+  position: relative;
+  overflow: hidden;
   display: flex;
   flex-direction: column;
-  gap: 0;
-  animation: fadeIn 0.5s ease both;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(16px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* ── TOP BAR ── */
-.topbar {
-  display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  padding: 52px 56px;
+  min-height: 100vh;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0; right: -1px; bottom: 0;
+  width: 80px;
+  background: var(--off-white);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+  z-index: 2;
+}
+
+.hero-geo {
+  position: absolute; inset: 0; overflow: hidden; pointer-events: none;
+}
+
+.hero-geo::before {
+  content: '';
+  position: absolute;
+  width: 520px; height: 520px;
+  border: 1px solid rgba(16,178,89,0.12);
+  border-radius: 50%;
+  top: -140px; right: -200px;
+}
+
+.hero-geo::after {
+  content: '';
+  position: absolute;
+  width: 320px; height: 320px;
+  border: 1px solid rgba(77,179,232,0.1);
+  border-radius: 50%;
+  bottom: 60px; left: -90px;
+}
+
+.hero-accent {
+  position: absolute;
+  width: 200px; height: 200px;
+  background: radial-gradient(circle, rgba(16,178,89,0.15) 0%, transparent 70%);
+  top: 30%; right: 10%;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.hero-lines {
+  position: absolute; inset: 0;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent, transparent 40px,
+    rgba(255,255,255,0.012) 40px,
+    rgba(255,255,255,0.012) 41px
+  );
+}
+
+.hero-top { position: relative; z-index: 1; }
+
+.sgs-wordmark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12px;
+  letter-spacing: 5px;
+  color: rgba(255,255,255,0.45);
+  text-transform: uppercase;
+  margin-bottom: 36px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.sgs-wordmark::before {
+  content: '';
+  width: 28px; height: 1px;
+  background: var(--sgs-green);
+  opacity: 0.6;
+}
+
+.hero-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(60px, 7vw, 88px);
+  line-height: 0.92;
+  color: var(--white);
+  letter-spacing: 1px;
   margin-bottom: 28px;
 }
 
-.topbar-left .label {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 10px; font-weight: 800;
-  text-transform: uppercase; letter-spacing: 2px;
-  color: var(--muted);
-  margin-bottom: 4px;
+.hero-headline em {
+  font-style: normal;
+  color: var(--sgs-green);
 }
 
-.topbar-left .title {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 26px; font-weight: 800;
-  text-transform: uppercase; letter-spacing: 1px;
-  color: var(--text); line-height: 1;
+.hero-desc {
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.8;
+  color: rgba(255,255,255,0.55);
+  max-width: 300px;
 }
 
-.topbar-left .company {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 10px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 3px;
-  color: var(--blue); margin-top: 5px;
+.hero-bottom { position: relative; z-index: 1; }
+
+.anon-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(16,178,89,0.1);
+  border: 1px solid rgba(16,178,89,0.25);
+  border-radius: 100px;
+  padding: 10px 20px;
+  margin-bottom: 28px;
 }
 
-.badge-anon {
-  background: rgba(125,194,66,0.12);
-  border: 1px solid rgba(125,194,66,0.25);
-  border-radius: 10px;
-  padding: 10px 16px;
-  text-align: right;
-}
-
-.badge-anon .dot-row {
-  display: flex; align-items: center; justify-content: flex-end; gap: 6px;
-  margin-bottom: 3px;
-}
-
-.badge-anon .dot {
+.anon-dot {
   width: 7px; height: 7px; border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 8px var(--green);
-  animation: blink 2s ease-in-out infinite;
+  background: var(--sgs-green);
+  box-shadow: 0 0 10px var(--sgs-green);
+  animation: pulse 2.5s ease-in-out infinite;
+  flex-shrink: 0;
 }
 
-@keyframes blink {
-  0%,100% { opacity: 1; } 50% { opacity: 0.3; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50%       { opacity: 0.5; transform: scale(0.8); }
 }
 
-.badge-anon .dot-label {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 11px; font-weight: 800;
-  text-transform: uppercase; letter-spacing: 1px;
-  color: var(--green);
+.anon-text {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--sgs-green);
 }
 
-.badge-anon .dot-sub {
-  font-size: 9px; color: var(--muted);
-  letter-spacing: 0.5px; text-transform: uppercase;
+.hero-footer-text {
+  font-size: 10px;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
 }
 
-/* ── SECTION LABEL ── */
-.section-label {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 10px; font-weight: 800;
-  text-transform: uppercase; letter-spacing: 2.5px;
+/* ── FORM SIDE ── */
+.form-side {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 64px 60px 64px 88px;
+  position: relative;
+}
+
+.form-header { margin-bottom: 36px; }
+
+.form-kicker {
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--sgs-green2);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.form-kicker::after {
+  content: '';
+  flex: 1;
+  max-width: 36px;
+  height: 1px;
+  background: var(--sgs-green2);
+  opacity: 0.4;
+}
+
+.form-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(32px, 3.5vw, 48px);
+  line-height: 1;
+  color: var(--ink);
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.form-subtitle {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* UNIDADE CHIP */
+.unidade-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, var(--sgs-green) 0%, var(--sgs-green2) 100%);
+  color: white;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 10px 18px;
+  border-radius: 100px;
+  margin-bottom: 32px;
+  box-shadow: 0 4px 16px rgba(16,178,89,0.25);
+}
+
+/* FIELD */
+.field { margin-bottom: 28px; }
+
+.field-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
   color: var(--muted);
   margin-bottom: 10px;
-  margin-top: 20px;
 }
-
-/* ── UNIDADE DISPLAY (substitui o select) ── */
-.unidade-display {
-  width: 100%;
-  background: rgba(41,168,224,0.06);
-  border: 1px solid rgba(41,168,224,0.25);
-  border-radius: 12px;
-  padding: 13px 16px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 13px; font-weight: 700;
-  letter-spacing: 0.5px; text-transform: uppercase;
-  color: var(--blue);
-  display: flex; align-items: center; gap: 10px;
-}
-
-.unidade-display::before { content: '🏥'; font-size: 14px; }
-
-/* ── ERRO: sem unidade na URL ── */
-.unidade-error {
-  background: rgba(248,113,113,0.06);
-  border: 1px solid rgba(248,113,113,0.25);
-  border-radius: 14px;
-  padding: 32px 24px;
-  text-align: center;
-}
-
-.unidade-error .err-icon { font-size: 36px; margin-bottom: 14px; }
-
-.unidade-error h3 {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 13px; font-weight: 800;
-  text-transform: uppercase; letter-spacing: 2px;
-  color: var(--red); margin-bottom: 10px;
-}
-
-.unidade-error p {
-  font-size: 13px; color: var(--muted); line-height: 1.7;
-}
-
-/* ── CARD ── */
-.card {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 24px;
-  position: relative;
-  overflow: hidden;
-}
-
-.card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(41,168,224,0.3), transparent);
-}
-
-/* ── FORM ── */
-.field { margin-bottom: 18px; }
 
 .field textarea {
   width: 100%;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  color: var(--text);
-  font-family: 'Inter', sans-serif;
-  font-size: 14px; font-weight: 400;
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.7;
+  padding: 16px 18px;
+  resize: none;
+  height: 160px;
   outline: none;
-  appearance: none; -webkit-appearance: none;
-  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
-  padding: 14px 16px;
-  resize: vertical; min-height: 120px;
-  line-height: 1.65;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
 }
+
+.field textarea::placeholder { color: var(--muted2); }
 
 .field textarea:focus {
-  border-color: rgba(41,168,224,0.5);
-  background: rgba(41,168,224,0.04);
-  box-shadow: 0 0 0 3px rgba(41,168,224,0.08);
+  border-color: var(--sgs-green);
+  box-shadow: 0 0 0 3px rgba(16,178,89,0.1);
 }
 
-.char-row {
-  text-align: right;
-  font-size: 10px; letter-spacing: 0.5px;
-  color: var(--muted); margin-top: 6px;
+.char-bar-wrap {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
 }
 
-/* ── SUBMIT ── */
+.char-bar {
+  height: 2px;
+  background: var(--border);
+  border-radius: 2px;
+  flex: 1;
+  margin-right: 12px;
+  overflow: hidden;
+}
+
+.char-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--sgs-green);
+  border-radius: 2px;
+  transition: width 0.15s, background 0.2s;
+}
+
+.char-count-txt {
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+/* SUBMIT BTN */
 .btn-submit {
-  width: 100%; padding: 16px;
-  background: var(--blue);
-  border: none; border-radius: 12px;
-  color: #fff;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 13px; font-weight: 800;
-  text-transform: uppercase; letter-spacing: 2px;
+  width: 100%;
+  padding: 18px 24px;
+  background: linear-gradient(135deg, var(--sgs-green) 0%, var(--sgs-green2) 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 18px;
+  letter-spacing: 3px;
   cursor: pointer;
-  transition: opacity 0.2s, transform 0.15s, box-shadow 0.2s;
-  box-shadow: 0 4px 20px rgba(41,168,224,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.15s, box-shadow 0.2s;
+  box-shadow: 0 6px 24px rgba(16,178,89,0.3);
+  -webkit-appearance: none;
 }
-.btn-submit:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 8px 28px rgba(41,168,224,0.45); }
+
+.btn-submit::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, var(--sgs-blue) 0%, var(--sgs-blue2) 100%);
+  transform: translateX(-100%);
+  transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+}
+
+.btn-submit:hover::before { transform: translateX(0); }
+.btn-submit:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(16,178,89,0.35); }
 .btn-submit:active { transform: translateY(0); }
-.btn-submit:disabled { background: rgba(255,255,255,0.08); color: var(--muted); box-shadow: none; cursor: not-allowed; transform: none; }
 
-/* ── SUCCESS ── */
-.success-screen { display: none; text-align: center; padding: 16px 0 8px; }
+.btn-submit span, .btn-submit svg { position: relative; z-index: 1; }
 
-.success-num {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 64px; font-weight: 900;
-  color: var(--blue); line-height: 1;
-  margin-bottom: 6px;
+.btn-submit:disabled {
+  background: var(--muted2);
+  color: var(--muted);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+.btn-submit:disabled::before { display: none; }
+
+.btn-arrow {
+  width: 18px; height: 18px;
+  transition: transform 0.2s;
+}
+.btn-submit:hover .btn-arrow { transform: translateX(4px); }
+
+/* SUCCESS */
+.success-view {
+  display: none;
+  text-align: center;
+  padding: 20px 0;
+  animation: fadeUp 0.5s ease both;
 }
 
-.success-screen h2 {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 18px; font-weight: 800;
-  text-transform: uppercase; letter-spacing: 2px;
-  color: var(--text); margin-bottom: 10px;
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-.success-screen p {
-  font-size: 13px; color: var(--muted);
-  line-height: 1.7; margin-bottom: 24px;
+.success-icon {
+  width: 76px; height: 76px;
+  background: linear-gradient(135deg, var(--sgs-green) 0%, var(--sgs-green2) 100%);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 24px;
+  font-size: 30px;
+  box-shadow: 0 8px 32px rgba(16,178,89,0.35);
+}
+
+.success-big {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 52px;
+  letter-spacing: 2px;
+  color: var(--ink);
+  line-height: 1;
+  margin-bottom: 12px;
+}
+
+.success-sub {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.7;
+  margin-bottom: 32px;
 }
 
 .btn-ghost {
   background: transparent;
-  border: 1px solid var(--border);
-  border-radius: 10px; padding: 11px 24px;
-  color: var(--muted); font-family: 'Inter', sans-serif;
-  font-size: 13px; cursor: pointer;
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  padding: 12px 28px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--muted);
+  cursor: pointer;
   transition: border-color 0.2s, color 0.2s;
+  -webkit-appearance: none;
 }
-.btn-ghost:hover { border-color: rgba(41,168,224,0.4); color: var(--blue); }
+.btn-ghost:hover { border-color: var(--sgs-green); color: var(--sgs-green); }
 
-/* ── ADMIN ── */
-.admin-trigger { margin-top: 40px; text-align: center; }
+/* ERROR VIEW */
+.error-view {
+  display: none;
+  background: white;
+  border: 1.5px solid rgba(239,68,68,0.2);
+  border-radius: 14px;
+  padding: 40px 32px;
+  text-align: center;
+}
+
+.error-view .err-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 80px;
+  line-height: 1;
+  color: rgba(239,68,68,0.1);
+  margin-bottom: 8px;
+}
+
+.error-view h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 24px;
+  letter-spacing: 1px;
+  color: var(--red);
+  margin-bottom: 10px;
+}
+
+.error-view p {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+/* ── ADMIN TRIGGER ── */
+.admin-trigger {
+  position: fixed;
+  bottom: 20px; right: 20px;
+  z-index: 50;
+}
+
 .admin-trigger button {
-  background: none; border: none;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 9px; font-weight: 700;
-  text-transform: uppercase; letter-spacing: 2px;
-  color: var(--muted); opacity: 0.4; cursor: pointer;
-  transition: opacity 0.2s;
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 100px;
+  padding: 10px 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+  -webkit-appearance: none;
 }
-.admin-trigger button:hover { opacity: 0.7; }
-
-.admin-wrap { display: none; margin-top: 12px; }
-
-.admin-card {
-  background: var(--card);
-  border: 1px solid rgba(41,168,224,0.2);
-  border-radius: 16px; padding: 24px;
-  position: relative; overflow: hidden;
-}
-.admin-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(41,168,224,0.5), transparent);
+.admin-trigger button:hover {
+  border-color: var(--sgs-green);
+  color: var(--sgs-green);
 }
 
-/* pw gate */
-.pw-gate { text-align: center; }
-.pw-gate p { font-size: 13px; color: var(--muted); line-height: 1.6; margin-bottom: 18px; }
+/* ── ADMIN PANEL ── */
+.admin-overlay {
+  display: none;
+  position: fixed; inset: 0;
+  background: rgba(10,22,40,0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 100;
+  align-items: flex-end;
+  justify-content: center;
+  padding: 0;
+  animation: fadeIn 0.2s ease;
+}
 
-.pw-wrap { position: relative; margin-bottom: 12px; }
-.pw-wrap input {
+.admin-overlay.open { display: flex; }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.admin-panel {
+  background: white;
+  border-radius: 20px 20px 0 0;
   width: 100%;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid var(--border);
-  border-radius: 12px; color: var(--text);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 22px; font-weight: 700;
-  padding: 14px 18px; text-align: center;
-  letter-spacing: 0.4em; outline: none;
-  appearance: none; -webkit-appearance: none;
+  max-width: 520px;
+  max-height: 92vh;
+  overflow-y: auto;
+  box-shadow: 0 -20px 60px rgba(0,0,0,0.2);
+  animation: slideUpSheet 0.35s cubic-bezier(0.34,1.1,0.64,1) both;
+  -webkit-overflow-scrolling: touch;
+}
+
+@keyframes slideUpSheet {
+  from { opacity: 0; transform: translateY(60px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.admin-panel-head {
+  padding: 20px 24px 18px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; background: white; z-index: 5;
+}
+
+/* drag handle */
+.admin-panel-head::before {
+  content: '';
+  position: absolute;
+  top: 8px; left: 50%;
+  transform: translateX(-50%);
+  width: 36px; height: 4px;
+  background: var(--muted2);
+  border-radius: 2px;
+}
+
+.admin-panel-head h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 22px;
+  letter-spacing: 1px;
+  color: var(--ink);
+}
+
+.admin-close {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 15px;
+  color: var(--muted);
+  transition: all 0.2s;
+  -webkit-appearance: none;
+}
+.admin-close:hover { background: var(--off-white); color: var(--ink); }
+
+.admin-body { padding: 24px 24px 40px; }
+
+/* PW SECTION */
+.pw-section { text-align: center; padding: 8px 0 16px; }
+.pw-section p { font-size: 13px; font-weight: 300; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+
+.pw-input-wrap { position: relative; margin-bottom: 14px; }
+.pw-input-wrap input {
+  width: 100%;
+  background: var(--off-white);
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 22px;
+  font-weight: 500;
+  text-align: center;
+  letter-spacing: 0.4em;
+  padding: 16px 18px;
+  color: var(--ink);
+  outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
 }
-.pw-wrap input:focus {
-  border-color: rgba(41,168,224,0.5);
-  box-shadow: 0 0 0 3px rgba(41,168,224,0.08);
+.pw-input-wrap input:focus {
+  border-color: var(--sgs-green);
+  box-shadow: 0 0 0 3px rgba(16,178,89,0.1);
 }
-.pw-error { color: var(--red); font-size: 12px; margin-top: 8px; display: none; letter-spacing: 0.3px; }
-.pw-hint { margin-top: 16px; font-size: 10px; color: var(--muted); line-height: 1.9; letter-spacing: 0.3px; }
+.pw-error { font-size: 12px; color: var(--red); margin-top: 6px; display: none; }
+.pw-hint { font-size: 11px; color: var(--muted); margin-top: 14px; line-height: 1.8; }
 .pw-hint code {
-  background: rgba(41,168,224,0.1); border: 1px solid var(--blue-bd);
-  padding: 2px 8px; border-radius: 5px;
-  color: var(--blue); font-family: monospace; font-size: 11px;
+  background: rgba(16,178,89,0.08);
+  border: 1px solid rgba(16,178,89,0.2);
+  padding: 1px 7px; border-radius: 4px;
+  color: var(--sgs-green2); font-size: 11px;
 }
 
-/* cfg area */
-.cfg { display: none; }
+/* CFG SECTION */
+.cfg-section { display: none; }
 
-.cfg-h {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 9px; font-weight: 800;
-  text-transform: uppercase; letter-spacing: 2.5px;
-  color: rgba(41,168,224,0.7);
-  margin-bottom: 14px; margin-top: 4px;
+.cfg-group { margin-bottom: 24px; }
+
+.cfg-group-title {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--sgs-green2);
+  margin-bottom: 14px;
   display: flex; align-items: center; gap: 10px;
 }
-.cfg-h::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+.cfg-group-title::after {
+  content: ''; flex: 1; height: 1px;
+  background: var(--sgs-green2); opacity: 0.2;
+}
 
-.cfg-field { margin-bottom: 14px; }
+.cfg-field { margin-bottom: 12px; }
 .cfg-field label {
-  display: block; font-family: 'Montserrat', sans-serif;
-  font-size: 9px; font-weight: 800;
-  text-transform: uppercase; letter-spacing: 2px;
-  color: var(--muted); margin-bottom: 7px;
+  display: block;
+  font-size: 9px; font-weight: 500;
+  letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted); margin-bottom: 6px;
 }
 .cfg-field input,
 .cfg-field select {
   width: 100%;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border);
-  border-radius: 10px; color: var(--text);
-  font-family: 'Inter', sans-serif; font-size: 13px;
-  padding: 10px 13px; outline: none;
+  background: var(--off-white);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  padding: 11px 14px;
+  color: var(--ink);
+  outline: none;
   appearance: none; -webkit-appearance: none;
-  transition: border-color 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s;
 }
 .cfg-field select {
-  padding-right: 36px;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(255,255,255,0.3)' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='rgba(10,26,40,0.4)' stroke-width='2' stroke-linecap='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
   background-repeat: no-repeat;
   background-position: right 12px center;
+  padding-right: 36px;
   cursor: pointer;
 }
-.cfg-field select option { background: #141820; }
 .cfg-field input:focus, .cfg-field select:focus {
-  border-color: rgba(41,168,224,0.4);
-  box-shadow: 0 0 0 3px rgba(41,168,224,0.07);
+  border-color: var(--sgs-green);
+  box-shadow: 0 0 0 3px rgba(16,178,89,0.08);
 }
-.cfg-field input::placeholder { color: rgba(255,255,255,0.15); font-size: 12px; }
+.cfg-field input::placeholder { color: var(--muted2); font-size: 13px; }
 
 .btn-cfg {
-  width: 100%; padding: 12px;
-  background: var(--blue-bg);
-  border: 1px solid var(--blue-bd);
-  border-radius: 10px; color: var(--blue);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 10px; font-weight: 800;
-  text-transform: uppercase; letter-spacing: 2px;
-  cursor: pointer; transition: background 0.2s, border-color 0.2s;
+  width: 100%; padding: 13px;
+  background: linear-gradient(135deg, var(--sgs-green) 0%, var(--sgs-green2) 100%);
+  border: none; border-radius: 8px;
+  color: white;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 600;
+  letter-spacing: 1px;
+  cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.2s;
+  margin-top: 4px;
+  box-shadow: 0 4px 14px rgba(16,178,89,0.25);
+  -webkit-appearance: none;
 }
-.btn-cfg:hover { background: rgba(41,168,224,0.2); border-color: rgba(41,168,224,0.4); }
+.btn-cfg:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(16,178,89,0.3); }
+.btn-cfg:active { transform: translateY(0); }
 
 .cfg-status {
-  font-size: 10px; text-align: center; margin-top: 9px;
-  font-family: 'Montserrat', sans-serif; letter-spacing: 0.5px; font-weight: 700;
+  font-size: 11px; text-align: center; margin-top: 8px;
+  font-weight: 500;
 }
-.cfg-status.ok   { color: var(--green); }
-.cfg-status.warn { color: var(--yellow); }
+.cfg-status.ok   { color: var(--sgs-green); }
+.cfg-status.warn { color: #f59e0b; }
 
 .sep { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
 
-.btn-exit {
-  width: 100%; padding: 10px; background: transparent;
-  border: 1px solid rgba(248,113,113,0.2); border-radius: 10px;
-  color: rgba(248,113,113,0.5);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 9px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase;
-  cursor: pointer; transition: all 0.2s; margin-top: 8px;
-}
-.btn-exit:hover { border-color: var(--red); color: var(--red); background: rgba(248,113,113,0.05); }
-
-/* QR */
-.qr-wrap { display: none; margin-top: 18px; text-align: center; }
+/* QR WRAP */
+.qr-wrap { display: none; margin-top: 16px; text-align: center; }
 .qr-wrap h4 {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 9px; font-weight: 800; letter-spacing: 2.5px;
-  text-transform: uppercase; color: var(--muted); margin-bottom: 16px;
+  font-size: 9px; font-weight: 500; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--muted); margin-bottom: 14px;
 }
-#qrcode { display: inline-block; background: #fff; padding: 14px; border-radius: 14px; }
-.qr-url-txt { font-size: 10px; color: var(--muted); word-break: break-all; margin-top: 10px; line-height: 1.5; opacity: 0.6; }
+#qrcode { display: inline-block; background: white; padding: 14px; border-radius: 12px; border: 1.5px solid var(--border); }
+.qr-url-txt { font-size: 10px; color: var(--muted); word-break: break-all; margin-top: 10px; line-height: 1.5; }
 .btn-dl {
-  margin-top: 14px; padding: 10px 22px;
-  background: transparent; border: 1px solid var(--border);
-  border-radius: 10px; color: var(--muted);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 10px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+  margin-top: 12px; padding: 10px 22px;
+  background: var(--off-white); border: 1.5px solid var(--border);
+  border-radius: 100px; color: var(--muted);
+  font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 500;
   cursor: pointer; transition: border-color 0.2s, color 0.2s;
+  -webkit-appearance: none;
 }
-.btn-dl:hover { border-color: rgba(41,168,224,0.5); color: var(--blue); }
+.btn-dl:hover { border-color: var(--sgs-green); color: var(--sgs-green); }
 
 /* URL LIST */
 .url-list { display: none; margin-top: 14px; }
 .url-item {
-  background: rgba(255,255,255,0.03);
-  border: 1px solid var(--border);
+  background: var(--off-white);
   border-radius: 10px;
-  padding: 10px 13px;
+  padding: 12px 14px;
   margin-bottom: 8px;
-  display: flex; align-items: center; gap: 10px;
+  display: flex; align-items: center; gap: 12px;
 }
 .url-item-name {
-  font-family: 'Montserrat', sans-serif;
-  font-size: 9px; font-weight: 800;
-  letter-spacing: 1px; text-transform: uppercase;
-  color: var(--blue);
-  flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font-size: 11px; font-weight: 500;
+  color: var(--ink); flex: 1;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 .url-item-btn {
-  background: var(--blue-bg);
-  border: 1px solid var(--blue-bd);
-  border-radius: 7px;
-  color: var(--blue);
-  font-family: 'Montserrat', sans-serif;
-  font-size: 8px; font-weight: 800;
-  letter-spacing: 1.5px; text-transform: uppercase;
-  padding: 5px 11px; cursor: pointer; white-space: nowrap;
-  transition: background 0.2s;
+  background: white;
+  border: 1.5px solid rgba(16,178,89,0.3);
+  border-radius: 100px; color: var(--sgs-green2);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px; font-weight: 600;
+  padding: 6px 14px; cursor: pointer; white-space: nowrap;
+  transition: all 0.15s;
+  -webkit-appearance: none;
 }
-.url-item-btn:hover { background: rgba(41,168,224,0.25); }
+.url-item-btn:hover { background: var(--sgs-green); border-color: var(--sgs-green); color: white; }
 
-/* TOAST */
+.btn-exit {
+  width: 100%; padding: 12px; background: transparent;
+  border: 1.5px solid rgba(239,68,68,0.25); border-radius: 8px;
+  color: rgba(239,68,68,0.55);
+  font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+  cursor: pointer; transition: all 0.2s; margin-top: 4px;
+  -webkit-appearance: none;
+}
+.btn-exit:hover { border-color: var(--red); color: var(--red); background: rgba(239,68,68,0.04); }
+
+/* ── TOAST ── */
 .toast {
-  position: fixed; bottom: 28px; left: 50%;
-  transform: translateX(-50%) translateY(70px);
-  background: var(--bg2); border: 1px solid var(--border);
-  border-radius: 100px; padding: 12px 22px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 11px; font-weight: 700;
-  letter-spacing: 1px; text-transform: uppercase;
-  transition: transform 0.3s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+  position: fixed; bottom: 80px; left: 50%;
+  transform: translateX(-50%) translateY(60px);
+  background: var(--ink);
+  border-radius: 100px; padding: 12px 24px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12px; font-weight: 500; letter-spacing: 0.5px;
+  color: white;
+  transition: transform 0.35s cubic-bezier(0.34,1.3,0.64,1), opacity 0.3s;
   opacity: 0; z-index: 9999; white-space: nowrap;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+  display: flex; align-items: center; gap: 8px;
+  max-width: 90vw;
 }
 .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-.toast.success { border-color: rgba(125,194,66,0.4); color: var(--green); }
-.toast.error   { border-color: rgba(248,113,113,0.4); color: var(--red); }
+.toast.success::before { content: '✓'; color: var(--sgs-green); font-weight: 700; }
+.toast.error::before   { content: '✕'; color: var(--red); font-weight: 700; }
 
-/* FOOTER */
-.footer {
-  text-align: center; margin-top: 36px;
-  font-family: 'Montserrat', sans-serif;
-  font-size: 8px; font-weight: 700;
-  letter-spacing: 2.5px; text-transform: uppercase;
-  color: var(--muted); opacity: 0.25;
+/* ── MOBILE HERO STRIP ── */
+.mobile-hero-strip {
+  display: none;
+  background: linear-gradient(135deg, var(--sgs-blue) 0%, #073d63 100%);
+  padding: 36px 24px 52px;
+  position: relative;
+  overflow: hidden;
 }
 
-@media (max-width: 480px) {
-  .card, .admin-card { padding: 20px 18px; }
-  body { padding: 28px 12px 60px; }
+.mobile-hero-strip::after {
+  content: '';
+  position: absolute;
+  bottom: -1px; left: 0; right: 0;
+  height: 48px;
+  background: var(--off-white);
+  clip-path: polygon(0 100%, 100% 100%, 100% 30%, 0 100%);
+}
+
+.mobile-geo-circle {
+  position: absolute;
+  width: 300px; height: 300px;
+  border: 1px solid rgba(16,178,89,0.1);
+  border-radius: 50%;
+  top: -80px; right: -80px;
+  pointer-events: none;
+}
+
+.mobile-accent {
+  position: absolute;
+  width: 150px; height: 150px;
+  background: radial-gradient(circle, rgba(16,178,89,0.15) 0%, transparent 70%);
+  top: 20%; right: 15%;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.mobile-wordmark {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 11px;
+  letter-spacing: 5px;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative; z-index: 1;
+}
+
+.mobile-wordmark::before {
+  content: '';
+  width: 20px; height: 1px;
+  background: var(--sgs-green);
+  opacity: 0.6;
+}
+
+.mobile-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 52px;
+  line-height: 0.92;
+  color: white;
+  letter-spacing: 1px;
+  margin-bottom: 16px;
+  position: relative; z-index: 1;
+}
+
+.mobile-headline em { font-style: normal; color: var(--sgs-green); }
+
+.mobile-anon {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(16,178,89,0.12);
+  border: 1px solid rgba(16,178,89,0.3);
+  border-radius: 100px;
+  padding: 8px 16px;
+  position: relative; z-index: 1;
+}
+
+.mobile-anon-dot {
+  width: 6px; height: 6px; border-radius: 50%;
+  background: var(--sgs-green);
+  box-shadow: 0 0 8px var(--sgs-green);
+  animation: pulse 2.5s ease-in-out infinite;
+  flex-shrink: 0;
+}
+
+.mobile-anon-text {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--sgs-green);
+}
+
+/* ── RESPONSIVE ── */
+@media (max-width: 860px) {
+  .shell {
+    grid-template-columns: 1fr;
+  }
+
+  .hero { display: none; }
+
+  .mobile-hero-strip { display: block; }
+
+  .form-side {
+    padding: 32px 20px 100px;
+    justify-content: flex-start;
+  }
+
+  .admin-overlay {
+    align-items: flex-end;
+  }
+
+  .admin-panel {
+    border-radius: 20px 20px 0 0;
+    max-height: 92vh;
+  }
+
+  .toast { bottom: 90px; }
+}
+
+@media (min-width: 861px) {
+  .mobile-hero-strip { display: none; }
+
+  .admin-overlay {
+    align-items: center;
+    padding: 20px;
+  }
+
+  .admin-panel {
+    border-radius: 16px;
+    max-width: 460px;
+  }
 }
 </style>
 </head>
 <body>
 
-<div class="page">
-
-  <!-- TOP BAR -->
-  <div class="topbar">
-    <div class="topbar-left">
-      <div class="label">Canal Interno</div>
-      <div class="title">Feedback</div>
-      <div class="company">São Geraldo Service</div>
-    </div>
-    <div class="badge-anon">
-      <div class="dot-row">
-        <div class="dot"></div>
-        <div class="dot-label">Anônimo</div>
-      </div>
-      <div class="dot-sub">100% seguro</div>
-    </div>
+<!-- MOBILE HERO (shown only on mobile) -->
+<div class="mobile-hero-strip">
+  <div class="mobile-geo-circle"></div>
+  <div class="mobile-accent"></div>
+  <div class="mobile-wordmark">São Geraldo Service</div>
+  <div class="mobile-headline">Canal<br>Interno<br><em>Feedback</em></div>
+  <div class="mobile-anon">
+    <div class="mobile-anon-dot"></div>
+    <span class="mobile-anon-text">Anônimo &amp; Seguro</span>
   </div>
+</div>
 
-  <!-- FORM CARD (visível só quando unidade está na URL) -->
-  <div class="card" id="formCard" style="display:none;">
-    <div id="formView">
+<div class="shell">
 
-      <div class="section-label" style="margin-top:0;">Sua unidade</div>
-      <div class="field">
-        <div class="unidade-display" id="unidadeDisplay">—</div>
+  <!-- DESKTOP HERO (hidden on mobile) -->
+  <aside class="hero">
+    <div class="hero-geo"></div>
+    <div class="hero-accent"></div>
+    <div class="hero-lines"></div>
+
+    <div class="hero-top">
+      <div class="sgs-wordmark">São Geraldo Service</div>
+      <h1 class="hero-headline">
+        Canal<br>
+        Interno<br>
+        <em>Feedback</em>
+      </h1>
+      <p class="hero-desc">
+        Canal interno de feedback 100% anônimo. Sua opinião chega diretamente a quem pode fazer a diferença.
+      </p>
+    </div>
+
+    <div class="hero-bottom">
+      <div class="anon-badge">
+        <div class="anon-dot"></div>
+        <span class="anon-text">Anônimo &amp; Seguro</span>
+      </div>
+      <div class="hero-footer-text">© São Geraldo Service</div>
+    </div>
+  </aside>
+
+  <!-- FORM SIDE -->
+  <main class="form-side">
+
+    <!-- FORM VIEW -->
+    <div id="formView" style="display:none;">
+      <div class="form-header">
+        <div class="form-kicker">Feedback interno</div>
+        <h2 class="form-title">Deixe sua mensagem</h2>
+        <p class="form-subtitle">Nenhum dado pessoal é coletado.</p>
       </div>
 
-      <div class="section-label">Sua mensagem</div>
+      <div class="unidade-chip" id="unidadeChip">
+        <span>🏥</span>
+        <span id="unidadeNome">—</span>
+      </div>
+
       <div class="field">
+        <label class="field-label">Sua mensagem</label>
         <textarea id="mensagem" placeholder="Escreva sua sugestão, opinião ou comentário..." maxlength="1000"></textarea>
-        <div class="char-row"><span id="charCount">0</span> / 1000</div>
+        <div class="char-bar-wrap">
+          <div class="char-bar"><div class="char-bar-fill" id="charFill"></div></div>
+          <span class="char-count-txt"><span id="charCount">0</span> / 1000</span>
+        </div>
       </div>
 
       <button class="btn-submit" id="submitBtn" onclick="enviarFeedback()">
-        Enviar Feedback
+        <span>Enviar Feedback</span>
+        <svg class="btn-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
       </button>
     </div>
 
-    <!-- SUCCESS -->
-    <div class="success-screen" id="successView">
-      <div class="success-num">✓</div>
-      <h2>Recebido!</h2>
-      <p>Seu feedback chegou com segurança.<br>Nenhum dado pessoal foi coletado.</p>
-      <button class="btn-ghost" onclick="resetForm()">Enviar outro</button>
+    <!-- SUCCESS VIEW -->
+    <div class="success-view" id="successView">
+      <div class="success-icon">✓</div>
+      <div class="success-big">Recebido!</div>
+      <p class="success-sub">Seu feedback chegou com segurança.<br>Nenhum dado pessoal foi coletado.</p>
+      <button class="btn-ghost" onclick="resetForm()">Enviar outro feedback</button>
     </div>
-  </div>
 
-  <!-- ERRO: sem unidade na URL -->
-  <div class="unidade-error" id="unidadeError" style="display:none;">
-    <div class="err-icon">🔗</div>
-    <h3>QR Code inválido</h3>
-    <p>Este link não contém uma unidade válida.<br>Por favor, use o QR Code correto da sua unidade.</p>
-  </div>
+    <!-- ERROR VIEW -->
+    <div class="error-view" id="errorView">
+      <div class="err-num">404</div>
+      <h3>Link inválido</h3>
+      <p>Este link não contém uma unidade válida.<br>Use o QR Code correto da sua unidade.</p>
+    </div>
 
-  <!-- ADMIN -->
-  <div class="admin-trigger">
-    <button onclick="toggleAdmin()">⚙ &nbsp;área administrativa</button>
-  </div>
+  </main>
+</div>
 
-  <div class="admin-wrap" id="adminWrap">
-    <div class="admin-card">
+<!-- ADMIN TRIGGER -->
+<div class="admin-trigger">
+  <button onclick="abrirAdmin()">⚙ Administração</button>
+</div>
+
+<!-- ADMIN OVERLAY -->
+<div class="admin-overlay" id="adminOverlay" onclick="fecharAdminFora(event)">
+  <div class="admin-panel">
+    <div class="admin-panel-head">
+      <h2>Configurações</h2>
+      <button class="admin-close" onclick="fecharAdmin()">✕</button>
+    </div>
+    <div class="admin-body">
 
       <!-- SENHA -->
-      <div class="pw-gate" id="pwGate">
-        <div class="cfg-h" style="justify-content:center; margin-bottom:14px;">Acesso Restrito</div>
-        <p>Digite a senha de administrador<br>para acessar as configurações.</p>
-        <div class="pw-wrap">
-          <input type="password" id="pwInput" placeholder="· · · · · · · ·"
+      <div class="pw-section" id="pwSection">
+        <p>Área restrita. Digite a senha<br>de administrador para continuar.</p>
+        <div class="pw-input-wrap">
+          <input type="password" id="pwInput" placeholder="• • • • • • • •"
             onkeydown="if(event.key==='Enter') verificarSenha()" autocomplete="off" />
         </div>
         <button class="btn-cfg" onclick="verificarSenha()">Entrar</button>
-        <div class="pw-error" id="pwError">Senha incorreta. Tente novamente.</div>
+        <div class="pw-error" id="pwError">Senha incorreta.</div>
         <div class="pw-hint">
           Senha padrão: <code>admin123</code><br>
-          <span style="color:var(--yellow);">⚠ Altere após a primeira configuração.</span>
+          <span style="color:#f59e0b;">⚠ Altere após a primeira configuração.</span>
         </div>
       </div>
 
-      <!-- CONFIG -->
-      <div class="cfg" id="cfgArea">
+      <!-- CFG -->
+      <div class="cfg-section" id="cfgSection">
 
-        <div class="cfg-h">Baserow</div>
-        <div class="cfg-field">
-          <label>URL do Baserow</label>
-          <input type="text" id="baserowUrl" placeholder="https://baserow.io" />
-        </div>
-        <div class="cfg-field">
-          <label>Token da API</label>
-          <input type="password" id="apiToken" placeholder="Seu token de API" />
-        </div>
-        <div class="cfg-field">
-          <label>ID da Tabela</label>
-          <input type="number" id="tableId" placeholder="ex: 1234" />
-        </div>
-        <div class="cfg-field">
-          <label>Campo — Unidade</label>
-          <input type="text" id="fieldUnidade" value="Unidade" />
-        </div>
-        <div class="cfg-field">
-          <label>Campo — Mensagem</label>
-          <input type="text" id="fieldMensagem" value="Mensagem" />
-        </div>
-        <div class="cfg-field">
-          <label>Campo — Data (opcional)</label>
-          <input type="text" id="fieldData" placeholder="Deixe vazio para não usar" />
-        </div>
-        <button class="btn-cfg" onclick="salvarConfig()">💾 &nbsp;Salvar Configurações</button>
-        <div class="cfg-status" id="cfgStatus"></div>
-
-        <hr class="sep">
-
-        <div class="cfg-h">Senha</div>
-        <div class="cfg-field">
-          <label>Nova Senha</label>
-          <input type="password" id="novaSenha" placeholder="Mínimo 6 caracteres" />
-        </div>
-        <div class="cfg-field">
-          <label>Confirmar</label>
-          <input type="password" id="confirmarSenha" placeholder="Repita a senha" />
-        </div>
-        <button class="btn-cfg" onclick="alterarSenha()">🔑 &nbsp;Alterar Senha</button>
-
-        <hr class="sep">
-
-        <!-- QR por unidade -->
-        <div class="cfg-h">QR Code por Unidade</div>
-        <p style="font-size:11px; color:var(--muted); margin-bottom:14px; line-height:1.8; letter-spacing:0.3px;">
-          Informe a URL do arquivo no GitHub Pages. O sistema monta automaticamente
-          <code style="background:var(--blue-bg);border:1px solid var(--blue-bd);padding:1px 7px;border-radius:4px;color:var(--blue);font-size:10px;">?unidade=NOME</code>
-          para cada unidade.
-        </p>
-
-        <div class="cfg-field">
-          <label>URL base do formulário (GitHub Pages)</label>
-          <input type="text" id="qrBaseUrl" placeholder="https://usuario.github.io/repo/feedback_form.html" />
-        </div>
-
-        <div class="cfg-field">
-          <label>Selecionar unidade</label>
-          <select id="qrUnidadeSelect">
-            <option value="">— escolha uma unidade —</option>
-            <option>Matriz</option>
-            <option>Rio Saúde</option>
-            <option>Viva Rio</option>
-            <option>HFA ROUPARIA</option>
-            <option>HFB ROUPARIA</option>
-            <option>HFB NUTRIÇÃO</option>
-            <option>CARDOSO FONTES</option>
-            <option>HOSPITAL DO BOMBEIRO</option>
-            <option>HOSPITAL FEDERAL DE IPANEMA</option>
-            <option>HOSPITAL LOURENÇO JORGE</option>
-            <option>HOSPITAL MATERNIDADE PAULINO WERNECK</option>
-            <option>HOSPITAL OCÊANICO</option>
-            <option>HOSPITAL PEDRO SEGUNDO</option>
-            <option>HOSPITAL RONALDO GAZOLLA</option>
-            <option>HOSPITAL SÃO JOSÉ</option>
-            <option>HOSPITAL SÃO LUCAS</option>
-            <option>HOSPITAL TAVARES DE MACEDO</option>
-            <option>HUCFF</option>
-            <option>HUPE</option>
-            <option>IPPMG</option>
-            <option>INSTITUTO GNOSIS</option>
-            <option>UERJ</option>
-          </select>
-        </div>
-
-        <button class="btn-cfg" onclick="gerarQR()">📱 &nbsp;Gerar QR Code</button>
-
-        <div class="qr-wrap" id="qrWrap">
-          <h4 id="qrTitle">QR Code para impressão</h4>
-          <div id="qrcode"></div>
-          <div class="qr-url-txt" id="qrUrlTxt"></div>
-          <br>
-          <button class="btn-dl" onclick="downloadQR()">⬇ &nbsp;Baixar PNG</button>
+        <div class="cfg-group">
+          <div class="cfg-group-title">Baserow</div>
+          <div class="cfg-field">
+            <label>URL do Baserow</label>
+            <input type="text" id="baserowUrl" placeholder="https://baserow.io" />
+          </div>
+          <div class="cfg-field">
+            <label>Token da API</label>
+            <input type="password" id="apiToken" placeholder="Token de API" />
+          </div>
+          <div class="cfg-field">
+            <label>ID da Tabela</label>
+            <input type="number" id="tableId" placeholder="ex: 1234" />
+          </div>
+          <div class="cfg-field">
+            <label>Campo — Unidade</label>
+            <input type="text" id="fieldUnidade" value="Unidade" />
+          </div>
+          <div class="cfg-field">
+            <label>Campo — Mensagem</label>
+            <input type="text" id="fieldMensagem" value="Mensagem" />
+          </div>
+          <div class="cfg-field">
+            <label>Campo — Data (opcional)</label>
+            <input type="text" id="fieldData" placeholder="Deixe vazio para não usar" />
+          </div>
+          <button class="btn-cfg" onclick="salvarConfig()">Salvar Configurações</button>
+          <div class="cfg-status" id="cfgStatus"></div>
         </div>
 
         <hr class="sep">
 
-        <!-- Todas as URLs -->
-        <div class="cfg-h">Todas as URLs</div>
-        <p style="font-size:11px; color:var(--muted); margin-bottom:12px; line-height:1.7;">
-          Gere todos os links de uma vez para distribuir ou criar QR codes em lote.
-        </p>
-        <button class="btn-cfg" onclick="listarURLs()">📋 &nbsp;Listar todas as URLs</button>
-        <div class="url-list" id="urlList"></div>
+        <div class="cfg-group">
+          <div class="cfg-group-title">Alterar Senha</div>
+          <div class="cfg-field">
+            <label>Nova Senha</label>
+            <input type="password" id="novaSenha" placeholder="Mínimo 6 caracteres" />
+          </div>
+          <div class="cfg-field">
+            <label>Confirmar</label>
+            <input type="password" id="confirmarSenha" placeholder="Repita a senha" />
+          </div>
+          <button class="btn-cfg" onclick="alterarSenha()">Alterar Senha</button>
+        </div>
 
         <hr class="sep">
-        <button class="btn-exit" onclick="sair()">Sair da área administrativa</button>
+
+        <div class="cfg-group">
+          <div class="cfg-group-title">QR Code por Unidade</div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:14px;line-height:1.7;font-weight:300;">
+            Informe a URL do arquivo no GitHub Pages. O parâmetro
+            <code style="background:rgba(16,178,89,0.08);border:1px solid rgba(16,178,89,0.2);padding:1px 6px;border-radius:4px;color:var(--sgs-green2);font-size:11px;">?unidade=NOME</code>
+            é adicionado automaticamente.
+          </p>
+          <div class="cfg-field">
+            <label>URL base (GitHub Pages)</label>
+            <input type="text" id="qrBaseUrl" placeholder="https://usuario.github.io/repo/feedback.html" />
+          </div>
+          <div class="cfg-field">
+            <label>Selecionar unidade</label>
+            <select id="qrUnidadeSelect">
+              <option value="">— escolha uma unidade —</option>
+              <option>Matriz</option>
+              <option>Rio Saúde</option>
+              <option>Viva Rio</option>
+              <option>HFA ROUPARIA</option>
+              <option>HFB ROUPARIA</option>
+              <option>HFB NUTRIÇÃO</option>
+              <option>CARDOSO FONTES</option>
+              <option>HOSPITAL DO BOMBEIRO</option>
+              <option>HOSPITAL FEDERAL DE IPANEMA</option>
+              <option>HOSPITAL LOURENÇO JORGE</option>
+              <option>HOSPITAL MATERNIDADE PAULINO WERNECK</option>
+              <option>HOSPITAL OCÊANICO</option>
+              <option>HOSPITAL PEDRO SEGUNDO</option>
+              <option>HOSPITAL RONALDO GAZOLLA</option>
+              <option>HOSPITAL SÃO JOSÉ</option>
+              <option>HOSPITAL SÃO LUCAS</option>
+              <option>HOSPITAL TAVARES DE MACEDO</option>
+              <option>HUCFF</option>
+              <option>HUPE</option>
+              <option>IPPMG</option>
+              <option>INSTITUTO GNOSIS</option>
+              <option>UERJ</option>
+            </select>
+          </div>
+          <button class="btn-cfg" onclick="gerarQR()">Gerar QR Code</button>
+
+          <div class="qr-wrap" id="qrWrap">
+            <h4 id="qrTitle">QR Code</h4>
+            <div id="qrcode"></div>
+            <div class="qr-url-txt" id="qrUrlTxt"></div>
+            <br>
+            <button class="btn-dl" onclick="downloadQR()">⬇ Baixar PNG</button>
+          </div>
+        </div>
+
+        <hr class="sep">
+
+        <div class="cfg-group">
+          <div class="cfg-group-title">Todas as URLs</div>
+          <p style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.7;font-weight:300;">
+            Gere todos os links de uma vez para distribuir ou imprimir QR codes em lote.
+          </p>
+          <button class="btn-cfg" onclick="listarURLs()">Listar todas as URLs</button>
+          <div class="url-list" id="urlList"></div>
+        </div>
+
+        <hr class="sep">
+        <button class="btn-exit" onclick="sair()">Sair da administração</button>
       </div>
 
     </div>
   </div>
-
-  <div class="footer">© São Geraldo Service — Canal de Feedback Interno</div>
 </div>
 
 <div class="toast" id="toast"></div>
 
+<!-- QR Code library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
 <script>
-// ─── Lista de unidades ────────────────────────────────────────────────────────
+// ─── Unidades ─────────────────────────────────────────────────────────────────
 const UNIDADES = [
   'Matriz','Rio Saúde','Viva Rio','HFA ROUPARIA','HFB ROUPARIA',
   'HFB NUTRIÇÃO','CARDOSO FONTES','HOSPITAL DO BOMBEIRO',
@@ -686,19 +1159,29 @@ const UNIDADES = [
   'HUCFF','HUPE','IPPMG','INSTITUTO GNOSIS','UERJ'
 ];
 
-// ─── Detectar unidade via ?unidade=NOME ───────────────────────────────────────
-const params        = new URLSearchParams(window.location.search);
-const unidadeParam  = params.get('unidade');
+// ─── Detectar unidade ─────────────────────────────────────────────────────────
+const params       = new URLSearchParams(window.location.search);
+const unidadeParam = params.get('unidade');
 let   UNIDADE_ATUAL = null;
 
 if (unidadeParam) {
   UNIDADE_ATUAL = unidadeParam;
-  document.getElementById('unidadeDisplay').textContent = UNIDADE_ATUAL;
-  document.getElementById('formCard').style.display = 'block';
-  document.title = `Feedback — ${UNIDADE_ATUAL} | São Geraldo Service`;
+  document.getElementById('unidadeNome').textContent = UNIDADE_ATUAL;
+  document.getElementById('formView').style.display = 'block';
+  document.title = `SGS Feedback — ${UNIDADE_ATUAL}`;
 } else {
-  document.getElementById('unidadeError').style.display = 'block';
+  document.getElementById('errorView').style.display = 'block';
 }
+
+// ─── Char bar ─────────────────────────────────────────────────────────────────
+document.getElementById('mensagem').addEventListener('input', function() {
+  const len = this.value.length;
+  document.getElementById('charCount').textContent = len;
+  const pct = (len / 1000) * 100;
+  const fill = document.getElementById('charFill');
+  fill.style.width = pct + '%';
+  fill.style.background = pct > 85 ? '#ef4444' : pct > 60 ? '#f59e0b' : 'var(--sgs-green)';
+});
 
 // ─── Config / Auth ────────────────────────────────────────────────────────────
 const CFG_KEY  = 'sgs_fb_cfg';
@@ -709,12 +1192,25 @@ const loadCfg = () => { try { return JSON.parse(localStorage.getItem(CFG_KEY)) |
 const saveCfg = c  => localStorage.setItem(CFG_KEY, JSON.stringify(c));
 const getHash = () => loadCfg().h || D_HASH;
 
+function abrirAdmin() {
+  document.getElementById('adminOverlay').classList.add('open');
+  if (sessionStorage.getItem(SESS_KEY)) mostrarCfg();
+}
+
+function fecharAdmin() {
+  document.getElementById('adminOverlay').classList.remove('open');
+}
+
+function fecharAdminFora(e) {
+  if (e.target === document.getElementById('adminOverlay')) fecharAdmin();
+}
+
 function verificarSenha() {
   const pw = document.getElementById('pwInput').value;
   if (!pw) return;
   if (btoa(pw) === getHash()) {
     sessionStorage.setItem(SESS_KEY, '1');
-    abrirCfg();
+    mostrarCfg();
   } else {
     document.getElementById('pwError').style.display = 'block';
     document.getElementById('pwInput').value = '';
@@ -722,9 +1218,9 @@ function verificarSenha() {
   }
 }
 
-function abrirCfg() {
-  document.getElementById('pwGate').style.display = 'none';
-  document.getElementById('cfgArea').style.display = 'block';
+function mostrarCfg() {
+  document.getElementById('pwSection').style.display = 'none';
+  document.getElementById('cfgSection').style.display = 'block';
   const c = loadCfg();
   const map = { baserowUrl:'url', apiToken:'tok', tableId:'tid', fieldUnidade:'fu', fieldMensagem:'fm', fieldData:'fd' };
   Object.entries(map).forEach(([id, key]) => {
@@ -734,11 +1230,13 @@ function abrirCfg() {
 }
 
 function updStatus(c) {
-  const el = document.getElementById('cfgStatus'); if (!el) return;
-  if (c && c.url && c.tok && c.tid) {
-    el.textContent = '🟢 Baserow configurado e ativo'; el.className = 'cfg-status ok';
+  const el = document.getElementById('cfgStatus');
+  if (c?.url && c?.tok && c?.tid) {
+    el.textContent = '✓ Baserow configurado e ativo';
+    el.className = 'cfg-status ok';
   } else {
-    el.textContent = '⚠ Preencha os campos para ativar o envio'; el.className = 'cfg-status warn';
+    el.textContent = '⚠ Preencha os campos para ativar o envio';
+    el.className = 'cfg-status warn';
   }
 }
 
@@ -767,32 +1265,21 @@ function alterarSenha() {
 
 function sair() {
   sessionStorage.removeItem(SESS_KEY);
-  document.getElementById('cfgArea').style.display = 'none';
-  document.getElementById('pwGate').style.display = 'block';
+  document.getElementById('cfgSection').style.display = 'none';
+  document.getElementById('pwSection').style.display = 'block';
   document.getElementById('pwInput').value = '';
-  document.getElementById('adminWrap').style.display = 'none';
+  fecharAdmin();
 }
-
-function toggleAdmin() {
-  const w = document.getElementById('adminWrap');
-  const open = w.style.display === 'block';
-  w.style.display = open ? 'none' : 'block';
-  if (!open && sessionStorage.getItem(SESS_KEY)) abrirCfg();
-}
-
-// ─── Char count ───────────────────────────────────────────────────────────────
-document.getElementById('mensagem').addEventListener('input', function() {
-  document.getElementById('charCount').textContent = this.value.length;
-});
 
 // ─── Enviar feedback ──────────────────────────────────────────────────────────
 async function enviarFeedback() {
   const ms = document.getElementById('mensagem').value.trim();
   if (!ms) { showToast('Escreva seu feedback', 'error'); return; }
   const c = loadCfg();
-  if (!c.url || !c.tok || !c.tid) { showToast('Sistema indisponível.', 'error'); return; }
+  if (!c.url || !c.tok || !c.tid) { showToast('Sistema indisponível', 'error'); return; }
   const btn = document.getElementById('submitBtn');
-  btn.disabled = true; btn.textContent = 'Enviando...';
+  btn.disabled = true;
+  btn.querySelector('span').textContent = 'Enviando...';
   const row = {};
   row[c.fu] = UNIDADE_ATUAL;
   row[c.fm] = ms;
@@ -808,12 +1295,16 @@ async function enviarFeedback() {
       document.getElementById('successView').style.display = 'block';
     } else { showToast('Erro ao enviar. Tente novamente.', 'error'); }
   } catch { showToast('Erro de conexão.', 'error'); }
-  finally { btn.disabled = false; btn.textContent = 'Enviar Feedback'; }
+  finally {
+    btn.disabled = false;
+    btn.querySelector('span').textContent = 'Enviar Feedback';
+  }
 }
 
 function resetForm() {
   document.getElementById('mensagem').value = '';
   document.getElementById('charCount').textContent = '0';
+  document.getElementById('charFill').style.width = '0%';
   document.getElementById('formView').style.display  = 'block';
   document.getElementById('successView').style.display = 'none';
 }
@@ -828,15 +1319,14 @@ function gerarQR() {
   const unidade = document.getElementById('qrUnidadeSelect').value;
   if (!base)    { showToast('Digite a URL base', 'error'); return; }
   if (!unidade) { showToast('Selecione uma unidade', 'error'); return; }
-
   const url = buildUrl(base, unidade);
   document.getElementById('qrcode').innerHTML = '';
   new QRCode(document.getElementById('qrcode'), {
-    text: url, width: 220, height: 220,
-    colorDark: '#000', colorLight: '#fff',
+    text: url, width: 200, height: 200,
+    colorDark: '#0a1628', colorLight: '#ffffff',
     correctLevel: QRCode.CorrectLevel.H
   });
-  document.getElementById('qrTitle').textContent = `QR Code — ${unidade}`;
+  document.getElementById('qrTitle').textContent = unidade;
   document.getElementById('qrUrlTxt').textContent = url;
   document.getElementById('qrWrap').style.display = 'block';
   showToast('QR Code gerado!', 'success');
@@ -846,19 +1336,42 @@ function downloadQR() {
   const canvas = document.querySelector('#qrcode canvas');
   if (!canvas) { showToast('Gere o QR Code primeiro', 'error'); return; }
   const unidade = document.getElementById('qrUnidadeSelect').value || 'unidade';
-  const pad = 28, lh = 56;
+  const pad = 32, lh = 72;
   const out = document.createElement('canvas');
   out.width  = canvas.width  + pad*2;
   out.height = canvas.height + pad*2 + lh;
   const ctx = out.getContext('2d');
-  ctx.fillStyle = '#fff'; ctx.fillRect(0,0,out.width,out.height);
-  ctx.drawImage(canvas, pad, pad);
-  ctx.fillStyle = '#29A8E0';
-  ctx.font = 'bold 13px Montserrat, sans-serif';
+
+  // Background branco
+  ctx.fillStyle = '#ffffff';
+  ctx.fillRect(0, 0, out.width, out.height);
+
+  // Barra verde topo
+  ctx.fillStyle = '#10b259';
+  ctx.fillRect(0, 0, out.width, 10);
+
+  // Barra azul lateral esquerda
+  ctx.fillStyle = '#0a5a8c';
+  ctx.fillRect(0, 0, 8, out.height);
+
+  // QR
+  ctx.drawImage(canvas, pad, pad + 10);
+
+  // Nome empresa
+  ctx.fillStyle = '#0a1628';
+  ctx.font = 'bold 13px sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('SÃO GERALDO SERVICE', out.width/2, canvas.height+pad+22);
-  ctx.fillStyle = '#666'; ctx.font = '11px sans-serif';
-  ctx.fillText(unidade, out.width/2, canvas.height+pad+40);
+  ctx.fillText('SÃO GERALDO SERVICE', out.width/2, canvas.height + pad + 32);
+
+  // Unidade em verde
+  ctx.fillStyle = '#10b259';
+  ctx.font = 'bold 12px sans-serif';
+  ctx.fillText(unidade, out.width/2, canvas.height + pad + 52);
+
+  // Linha decorativa
+  ctx.fillStyle = '#10b259';
+  ctx.fillRect(out.width/2 - 30, canvas.height + pad + 58, 60, 2);
+
   const a = document.createElement('a');
   a.download = `qrcode-${unidade.toLowerCase().replace(/[\s\/]+/g,'-')}.png`;
   a.href = out.toDataURL('image/png'); a.click();
@@ -868,23 +1381,18 @@ function downloadQR() {
 function listarURLs() {
   const base = document.getElementById('qrBaseUrl').value.trim();
   if (!base) { showToast('Preencha a URL base primeiro', 'error'); return; }
-
   const container = document.getElementById('urlList');
   container.innerHTML = '';
-
   UNIDADES.forEach(u => {
     const url = buildUrl(base, u);
     const div = document.createElement('div');
     div.className = 'url-item';
-    // store url in data attr to avoid escaping issues with onclick
     div.innerHTML = `
       <span class="url-item-name" title="${url}">${u}</span>
-      <button class="url-item-btn">Copiar</button>
+      <button class="url-item-btn" onclick="copiar('${url.replace(/'/g,"\\'")}')">Copiar</button>
     `;
-    div.querySelector('button').addEventListener('click', () => copiar(url));
     container.appendChild(div);
   });
-
   container.style.display = 'block';
   showToast('URLs geradas!', 'success');
 }
@@ -896,9 +1404,10 @@ function copiar(url) {
 }
 
 // ─── Toast ────────────────────────────────────────────────────────────────────
-function showToast(msg, type='success') {
+function showToast(msg, type = 'success') {
   const t = document.getElementById('toast');
-  t.textContent = msg; t.className = `toast ${type} show`;
+  t.textContent = msg;
+  t.className = `toast ${type} show`;
   setTimeout(() => t.className = 'toast', 3200);
 }
 </script>
