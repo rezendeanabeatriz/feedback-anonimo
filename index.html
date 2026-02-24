@@ -1309,8 +1309,13 @@ async function enviarFeedback() {
     if (res.ok) {
       document.getElementById('formView').style.display  = 'none';
       document.getElementById('successView').style.display = 'block';
-    } else { showToast('Erro ao enviar. Tente novamente.', 'error'); }
-  } catch { showToast('Erro de conexão.', 'error'); }
+    } else {
+      let errMsg = `Erro ${res.status}`;
+      try { const j = await res.json(); errMsg += ': ' + (j.error || j.detail || JSON.stringify(j)); } catch {}
+      showToast(errMsg, 'error');
+      console.error('Baserow erro:', errMsg, '| row:', JSON.stringify(row), '| url:', c.url, '| tid:', c.tid);
+    }
+  } catch (e) { showToast('Erro de conexão: ' + e.message, 'error'); console.error(e); }
   finally {
     btn.disabled = false;
     btn.querySelector('span').textContent = 'Enviar Feedback';
