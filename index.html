@@ -1018,8 +1018,8 @@ body::before {
         <button class="btn-cfg" onclick="verificarSenha()">Entrar</button>
         <div class="pw-error" id="pwError">Senha incorreta.</div>
         <div class="pw-hint">
-          Senha padrão: <code>admin123</code><br>
-          <span style="color:#f59e0b;">⚠ Altere após a primeira configuração.</span>
+          Senha definida no servidor.<br>
+          <span style="color:var(--muted);">Contate o administrador do sistema se não souber.</span>
         </div>
       </div>
 
@@ -1027,48 +1027,12 @@ body::before {
       <div class="cfg-section" id="cfgSection">
 
         <div class="cfg-group">
-          <div class="cfg-group-title">Baserow</div>
-          <div class="cfg-field">
-            <label>URL do Baserow</label>
-            <input type="text" id="baserowUrl" placeholder="https://baserow.io" />
-          </div>
-          <div class="cfg-field">
-            <label>Token da API</label>
-            <input type="password" id="apiToken" placeholder="Token de API" />
-          </div>
-          <div class="cfg-field">
-            <label>ID da Tabela</label>
-            <input type="number" id="tableId" placeholder="ex: 1234" />
-          </div>
-          <div class="cfg-field">
-            <label>Campo — Unidade</label>
-            <input type="text" id="fieldUnidade" value="Unidade" />
-          </div>
-          <div class="cfg-field">
-            <label>Campo — Mensagem</label>
-            <input type="text" id="fieldMensagem" value="Mensagem" />
-          </div>
-          <div class="cfg-field">
-            <label>Campo — Data (opcional)</label>
-            <input type="text" id="fieldData" placeholder="Deixe vazio para não usar" />
-          </div>
-          <button class="btn-cfg" onclick="salvarConfig()">Salvar Configurações</button>
-          <div class="cfg-status" id="cfgStatus"></div>
-        </div>
-
-        <hr class="sep">
-
-        <div class="cfg-group">
-          <div class="cfg-group-title">Alterar Senha</div>
-          <div class="cfg-field">
-            <label>Nova Senha</label>
-            <input type="password" id="novaSenha" placeholder="Mínimo 6 caracteres" />
-          </div>
-          <div class="cfg-field">
-            <label>Confirmar</label>
-            <input type="password" id="confirmarSenha" placeholder="Repita a senha" />
-          </div>
-          <button class="btn-cfg" onclick="alterarSenha()">Alterar Senha</button>
+          <div class="cfg-group-title">Status do Sistema</div>
+          <div class="cfg-status ok" id="cfgStatus">✓ Proxy seguro ativo — token protegido no servidor</div>
+          <p style="font-size:12px;color:var(--muted);margin-top:10px;line-height:1.7;font-weight:300;">
+            As credenciais do banco de dados ficam no servidor proxy.<br>
+            Nenhum dado sensível é exposto no navegador.
+          </p>
         </div>
 
         <hr class="sep">
@@ -1159,7 +1123,11 @@ const UNIDADES = [
   'HUCFF','HUPE','IPPMG','INSTITUTO GNOSIS','UERJ'
 ];
 
-// ─── Detectar unidade ─────────────────────────────────────────────────────────
+// ─── CONFIGURAÇÃO SEGURA ─────────────────────────────────────────────────────
+// ⚠️  ALTERE ESTA URL para a URL do seu Cloudflare Worker após o deploy
+const PROXY_URL = 'https://sgs-proxy.santos-anabeatrizrezende.workers.dev';
+
+// ─── Detectar unidade ────────────────────────────────────────────────────────
 const params       = new URLSearchParams(window.location.search);
 const unidadeParam = params.get('unidade');
 let   UNIDADE_ATUAL = null;
@@ -1173,7 +1141,7 @@ if (unidadeParam) {
   document.getElementById('errorView').style.display = 'block';
 }
 
-// ─── Char bar ─────────────────────────────────────────────────────────────────
+// ─── Char bar ────────────────────────────────────────────────────────────────
 document.getElementById('mensagem').addEventListener('input', function() {
   const len = this.value.length;
   document.getElementById('charCount').textContent = len;
@@ -1183,30 +1151,8 @@ document.getElementById('mensagem').addEventListener('input', function() {
   fill.style.background = pct > 85 ? '#ef4444' : pct > 60 ? '#f59e0b' : 'var(--sgs-green)';
 });
 
-// ─── Config / Auth ────────────────────────────────────────────────────────────
-const CFG_KEY  = 'sgs_fb_cfg';
-const SESS_KEY = 'sgs_admin';
-const D_HASH   = btoa('admin123');
-
-// Configurações padrão incorporadas — funcionam em qualquer dispositivo
-const DEFAULT_CFG = {
-  url: 'https://api.baserow.io',
-  tok: 'x2TqIEhKcYyctAnlBWUVeuqnUBmTQRbX',
-  tid: '853450',
-  fu:  'Unidade',
-  fm:  'Mensagem',
-  fd:  'Data'
-};
-
-const loadCfg = () => {
-  try {
-    const saved = JSON.parse(localStorage.getItem(CFG_KEY)) || {};
-    // Mescla: valores salvos pelo admin prevalecem, senão usa os padrões
-    return Object.assign({}, DEFAULT_CFG, saved);
-  } catch { return Object.assign({}, DEFAULT_CFG); }
-};
-const saveCfg = c  => localStorage.setItem(CFG_KEY, JSON.stringify(c));
-const getHash = () => loadCfg().h || D_HASH;
+// ─── Admin / Auth (via servidor) ─────────────────────────────────────────────
+const SESS_KEY = 'sgs_admin_token';
 
 function abrirAdmin() {
   document.getElementById('adminOverlay').classList.add('open');
@@ -1221,62 +1167,34 @@ function fecharAdminFora(e) {
   if (e.target === document.getElementById('adminOverlay')) fecharAdmin();
 }
 
-function verificarSenha() {
+async function verificarSenha() {
   const pw = document.getElementById('pwInput').value;
   if (!pw) return;
-  if (btoa(pw) === getHash()) {
-    sessionStorage.setItem(SESS_KEY, '1');
-    mostrarCfg();
-  } else {
-    document.getElementById('pwError').style.display = 'block';
-    document.getElementById('pwInput').value = '';
-    document.getElementById('pwInput').focus();
+
+  try {
+    const res = await fetch(`${PROXY_URL}/admin/verify`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ password: pw })
+    });
+    const data = await res.json();
+
+    if (res.ok && data.success) {
+      sessionStorage.setItem(SESS_KEY, data.token);
+      mostrarCfg();
+    } else {
+      document.getElementById('pwError').style.display = 'block';
+      document.getElementById('pwInput').value = '';
+      document.getElementById('pwInput').focus();
+    }
+  } catch (e) {
+    showToast('Erro de conexão com o servidor', 'error');
   }
 }
 
 function mostrarCfg() {
   document.getElementById('pwSection').style.display = 'none';
   document.getElementById('cfgSection').style.display = 'block';
-  const c = loadCfg();
-  const map = { baserowUrl:'url', apiToken:'tok', tableId:'tid', fieldUnidade:'fu', fieldMensagem:'fm', fieldData:'fd' };
-  Object.entries(map).forEach(([id, key]) => {
-    if (c[key] !== undefined) document.getElementById(id).value = c[key];
-  });
-  updStatus(c);
-}
-
-function updStatus(c) {
-  const el = document.getElementById('cfgStatus');
-  if (c?.url && c?.tok && c?.tid) {
-    el.textContent = '✓ Baserow configurado e ativo';
-    el.className = 'cfg-status ok';
-  } else {
-    el.textContent = '⚠ Preencha os campos para ativar o envio';
-    el.className = 'cfg-status warn';
-  }
-}
-
-function salvarConfig() {
-  const c = loadCfg();
-  c.url = document.getElementById('baserowUrl').value.trim().replace(/\/$/,'');
-  c.tok = document.getElementById('apiToken').value.trim();
-  c.tid = document.getElementById('tableId').value.trim();
-  c.fu  = document.getElementById('fieldUnidade').value.trim() || 'Unidade';
-  c.fm  = document.getElementById('fieldMensagem').value.trim() || 'Mensagem';
-  c.fd  = document.getElementById('fieldData').value.trim();
-  saveCfg(c); updStatus(c);
-  showToast('Configurações salvas!', 'success');
-}
-
-function alterarSenha() {
-  const n  = document.getElementById('novaSenha').value;
-  const cf = document.getElementById('confirmarSenha').value;
-  if (n.length < 6) { showToast('Mínimo 6 caracteres', 'error'); return; }
-  if (n !== cf)     { showToast('Senhas não coincidem', 'error'); return; }
-  const c = loadCfg(); c.h = btoa(n); saveCfg(c);
-  document.getElementById('novaSenha').value = '';
-  document.getElementById('confirmarSenha').value = '';
-  showToast('Senha alterada!', 'success');
 }
 
 function sair() {
@@ -1287,36 +1205,39 @@ function sair() {
   fecharAdmin();
 }
 
-// ─── Enviar feedback ──────────────────────────────────────────────────────────
+// ─── Enviar feedback (via proxy seguro) ──────────────────────────────────────
 async function enviarFeedback() {
   const ms = document.getElementById('mensagem').value.trim();
   if (!ms) { showToast('Escreva seu feedback', 'error'); return; }
-  const c = loadCfg();
-  if (!c.url || !c.tok || !c.tid) { showToast('Sistema indisponível', 'error'); return; }
+  if (ms.length < 3) { showToast('Feedback muito curto', 'error'); return; }
+
   const btn = document.getElementById('submitBtn');
   btn.disabled = true;
   btn.querySelector('span').textContent = 'Enviando...';
-  const row = {};
-  row[c.fu] = UNIDADE_ATUAL;
-  row[c.fm] = ms;
-  if (c.fd) row[c.fd] = new Date().toISOString().slice(0,10);
+
   try {
-    const res = await fetch(`${c.url}/api/database/rows/table/${c.tid}/?user_field_names=true`, {
+    const res = await fetch(`${PROXY_URL}/feedback`, {
       method: 'POST',
-      headers: { 'Authorization': `Token ${c.tok}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify(row)
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        unidade: UNIDADE_ATUAL,
+        mensagem: ms
+      })
     });
-    if (res.ok) {
+
+    const data = await res.json();
+
+    if (res.ok && data.success) {
       document.getElementById('formView').style.display  = 'none';
       document.getElementById('successView').style.display = 'block';
+    } else if (res.status === 429) {
+      showToast('Muitas tentativas. Aguarde alguns minutos.', 'error');
     } else {
-      let errMsg = `Erro ${res.status}`;
-      try { const j = await res.json(); errMsg += ': ' + (j.error || j.detail || JSON.stringify(j)); } catch {}
-      showToast(errMsg, 'error');
-      console.error('Baserow erro:', errMsg, '| row:', JSON.stringify(row), '| url:', c.url, '| tid:', c.tid);
+      showToast(data.error || 'Erro ao enviar feedback', 'error');
     }
-  } catch (e) { showToast('Erro de conexão: ' + e.message, 'error'); console.error(e); }
-  finally {
+  } catch (e) {
+    showToast('Erro de conexão. Verifique sua internet.', 'error');
+  } finally {
     btn.disabled = false;
     btn.querySelector('span').textContent = 'Enviar Feedback';
   }
@@ -1330,7 +1251,7 @@ function resetForm() {
   document.getElementById('successView').style.display = 'none';
 }
 
-// ─── QR Code ──────────────────────────────────────────────────────────────────
+// ─── QR Code ─────────────────────────────────────────────────────────────────
 function buildUrl(base, unidade) {
   return `${base.trim().replace(/\/$/,'')}?unidade=${encodeURIComponent(unidade)}`;
 }
@@ -1362,43 +1283,28 @@ function downloadQR() {
   out.width  = canvas.width  + pad*2;
   out.height = canvas.height + pad*2 + lh;
   const ctx = out.getContext('2d');
-
-  // Background branco
   ctx.fillStyle = '#ffffff';
   ctx.fillRect(0, 0, out.width, out.height);
-
-  // Barra verde topo
   ctx.fillStyle = '#10b259';
   ctx.fillRect(0, 0, out.width, 10);
-
-  // Barra azul lateral esquerda
   ctx.fillStyle = '#0a5a8c';
   ctx.fillRect(0, 0, 8, out.height);
-
-  // QR
   ctx.drawImage(canvas, pad, pad + 10);
-
-  // Nome empresa
   ctx.fillStyle = '#0a1628';
   ctx.font = 'bold 13px sans-serif';
   ctx.textAlign = 'center';
   ctx.fillText('SÃO GERALDO SERVICE', out.width/2, canvas.height + pad + 32);
-
-  // Unidade em verde
   ctx.fillStyle = '#10b259';
   ctx.font = 'bold 12px sans-serif';
   ctx.fillText(unidade, out.width/2, canvas.height + pad + 52);
-
-  // Linha decorativa
   ctx.fillStyle = '#10b259';
   ctx.fillRect(out.width/2 - 30, canvas.height + pad + 58, 60, 2);
-
   const a = document.createElement('a');
   a.download = `qrcode-${unidade.toLowerCase().replace(/[\s\/]+/g,'-')}.png`;
   a.href = out.toDataURL('image/png'); a.click();
 }
 
-// ─── Listar todas as URLs ─────────────────────────────────────────────────────
+// ─── Listar URLs ─────────────────────────────────────────────────────────────
 function listarURLs() {
   const base = document.getElementById('qrBaseUrl').value.trim();
   if (!base) { showToast('Preencha a URL base primeiro', 'error'); return; }
@@ -1424,7 +1330,7 @@ function copiar(url) {
     .catch(() => showToast('Erro ao copiar', 'error'));
 }
 
-// ─── Toast ────────────────────────────────────────────────────────────────────
+// ─── Toast ───────────────────────────────────────────────────────────────────
 function showToast(msg, type = 'success') {
   const t = document.getElementById('toast');
   t.textContent = msg;
