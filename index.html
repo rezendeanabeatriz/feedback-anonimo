@@ -296,7 +296,25 @@ body::before {
 
 .field textarea::placeholder { color: var(--muted2); }
 
-.field textarea:focus {
+.field input[type="text"] {
+  width: 100%;
+  background: white;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  color: var(--ink);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  font-weight: 300;
+  padding: 14px 18px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  -webkit-appearance: none;
+}
+
+.field input[type="text"]::placeholder { color: var(--muted2); }
+
+.field textarea:focus,
+.field input[type="text"]:focus {
   border-color: var(--sgs-green);
   box-shadow: 0 0 0 3px rgba(16,178,89,0.1);
 }
@@ -960,12 +978,22 @@ body::before {
       </div>
 
       <div class="field">
+        <label class="field-label">(Opcional) — Se identifique</label>
+        <input type="text" id="identificacao" placeholder="Seu nome ou apelido (opcional)" maxlength="120" />
+      </div>
+
+      <div class="field">
         <label class="field-label">Sua mensagem</label>
         <textarea id="mensagem" placeholder="Escreva sua sugestão, opinião ou comentário..." maxlength="1000"></textarea>
         <div class="char-bar-wrap">
           <div class="char-bar"><div class="char-bar-fill" id="charFill"></div></div>
           <span class="char-count-txt"><span id="charCount">0</span> / 1000</span>
         </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Nome (ou apelido) da pessoa avaliada/citada</label>
+        <input type="text" id="pessoaCitada" placeholder="Sobre quem é este feedback?" maxlength="120" />
       </div>
 
       <button class="btn-submit" id="submitBtn" onclick="enviarFeedback()">
@@ -1213,6 +1241,8 @@ function sair() {
 // ─── Enviar feedback (via proxy seguro) ──────────────────────────────────────
 async function enviarFeedback() {
   const ms = document.getElementById('mensagem').value.trim();
+  const identificacao = document.getElementById('identificacao').value.trim();
+  const pessoaCitada = document.getElementById('pessoaCitada').value.trim();
   if (!ms) { showToast('Escreva seu feedback', 'error'); return; }
   if (ms.length < 3) { showToast('Feedback muito curto', 'error'); return; }
 
@@ -1226,7 +1256,9 @@ async function enviarFeedback() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         unidade: UNIDADE_ATUAL,
-        mensagem: ms
+        mensagem: ms,
+        identificacao: identificacao,
+        pessoaCitada: pessoaCitada
       })
     });
 
@@ -1250,6 +1282,8 @@ async function enviarFeedback() {
 
 function resetForm() {
   document.getElementById('mensagem').value = '';
+  document.getElementById('identificacao').value = '';
+  document.getElementById('pessoaCitada').value = '';
   document.getElementById('charCount').textContent = '0';
   document.getElementById('charFill').style.width = '0%';
   document.getElementById('formView').style.display  = 'block';
